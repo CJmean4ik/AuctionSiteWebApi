@@ -3,13 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSite.API", "AuctionSite\AuctionSite.API.csproj", "{2BFBD2CB-90A5-4E93-B9EB-C1F3A38B9D95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionSite.API", "AuctionSite\AuctionSite.API.csproj", "{2BFBD2CB-90A5-4E93-B9EB-C1F3A38B9D95}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6F6F055B-9EC8-4A0A-B47D-F114328889BA} = {6F6F055B-9EC8-4A0A-B47D-F114328889BA}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSite.Core", "AuctionSite.Core\AuctionSite.Core.csproj", "{5D0DA832-91F2-45A5-A48C-DC2FD3225E3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionSite.Core", "AuctionSite.Core\AuctionSite.Core.csproj", "{5D0DA832-91F2-45A5-A48C-DC2FD3225E3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSite.Application", "AuctionSite.Application\AuctionSite.Application.csproj", "{42973563-EE91-4BA3-BD04-43EF069DDE30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionSite.Application", "AuctionSite.Application\AuctionSite.Application.csproj", "{42973563-EE91-4BA3-BD04-43EF069DDE30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSite.DataAccess", "AuctionSite.DataAccess\AuctionSite.DataAccess.csproj", "{6F6F055B-9EC8-4A0A-B47D-F114328889BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionSite.DataAccess", "AuctionSite.DataAccess\AuctionSite.DataAccess.csproj", "{6F6F055B-9EC8-4A0A-B47D-F114328889BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
