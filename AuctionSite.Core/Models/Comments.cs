@@ -6,18 +6,18 @@ namespace AuctionSite.Core.Models
     {
         private readonly List<ReplyComments> _replyComments = new List<ReplyComments>();
 
-        public Guid Id { get; }
+        public int Id { get; }
         public string Text { get; } = string.Empty;
         public List<ReplyComments> ReplyComments => _replyComments;
 
         public void AddReplyComments(List<ReplyComments> replyComments) => _replyComments.AddRange(replyComments);
 
-        private Comments(Guid id, string text)
+        private Comments(int id, string text)
         {
             Id = id;
             Text = text;
         }
 
-        public static Result<Comments> Create(Guid id, string text) => Result.Success(new Comments(id, text));
+        public static Result<Comments> Create(string text, int id = 0) => Result.Success(new Comments(id, text));
     }
 }

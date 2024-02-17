@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AuctionSite.Core\AuctionSite.Core.csproj" />
+    <ProjectReference Include="..\AuctionSite.DataAccess\AuctionSite.DataAccess.csproj" />
+  </ItemGroup>
+
 </Project>

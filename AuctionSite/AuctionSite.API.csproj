@@ -18,6 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AuctionSite.Application\AuctionSite.Application.csproj" />
+    <ProjectReference Include="..\AuctionSite.Core\AuctionSite.Core.csproj" />
     <ProjectReference Include="..\AuctionSite.DataAccess\AuctionSite.DataAccess.csproj" />
   </ItemGroup>
 

@@ -1,18 +1,25 @@
-﻿namespace AuctionSite.Core.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AuctionSite.Core.Models
 {
-    public class LotConcreteEntity
+    [Table("LotConcrete")]
+    public class LotConcreteEntity : LotEntity
     {
-        public Guid Id { get; set; }
         public string FullDescription { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public DateTime HaveTime { get; set; }
+        public int DurationSale { get; set; }
+        public string FullImage { get; set; } = string.Empty;
         public decimal MaxPrice { get; set; }
-        public bool IsSold { get; set; }
+        public LotStatus LotStatus { get; set; }
 
         public List<BetEntity>? Bets { get; set; }
+    }
 
-        public Guid LotId { get; set; }
-        public LotEntity? Lot { get; set; }
+    public enum LotStatus
+    {
+        Closed,
+        Sold,
+        Active
     }
 }

@@ -4,19 +4,16 @@ namespace AuctionSite.Core.Models
 {
     public class Image
     {
-        public Guid Id { get; }
+        public int Id { get; }
         public string Name { get; } = string.Empty;
 
-        private Image(Guid id, string name)
+        private Image(int id, string name)
         {
             Id = id;
             Name = name;
         }
-        public static Result<Image> Create(Guid id, string name)
-        {
-            var image = new Image(id, name);
+        public static Result<Image> Create(string name, int id = 0)
+                   => Result.Success(new Image(id, name));
 
-            return Result.Success(image);
-        }
     }
 }

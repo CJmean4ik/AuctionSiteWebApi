@@ -8,11 +8,8 @@ namespace AuctionSite.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<LotConcreteEntity> builder)
         {
-            builder.HasKey(hk => hk.Id);
-
-            builder.HasOne(ho => ho.Lot)
-                   .WithOne(wo => wo.LotConcrete)
-                   .HasForeignKey<LotEntity>(fk => fk.LotConcreteId);
+            builder.Property(p => p.LotStatus)
+                   .HasConversion<string>();
         }
     }
 }

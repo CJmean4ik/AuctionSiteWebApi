@@ -25,9 +25,7 @@ namespace AuctionSite.DataAccess
             modelBuilder.ApplyConfiguration(new CommentsEntityConfig());
             modelBuilder.ApplyConfiguration(new LotEntityConfig());
             modelBuilder.ApplyConfiguration(new LotConcreteEntityConfig());
-            modelBuilder.ApplyConfiguration(new BuyerEntityConfig());
             modelBuilder.ApplyConfiguration(new UserEntityConfig());
         }
-
     }
 }

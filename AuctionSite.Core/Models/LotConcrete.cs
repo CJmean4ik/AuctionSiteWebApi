@@ -10,10 +10,10 @@ namespace AuctionSite.Core.Models
         public string FullDescription { get; } = string.Empty;
         public DateTime StartDate { get; }
         public DateTime EndDate { get; }
-        public DateTime HaveTime { get; }
+        public int DurationSale { get; }
         public Image FullImage { get; }
         public decimal MaxPrice { get; }
-        public bool IsSold { get; }
+        public string LotStatus { get; }
 
         public IReadOnlyCollection<Bet> Bets => _bets;
 
@@ -23,37 +23,37 @@ namespace AuctionSite.Core.Models
                            string fullDescription,
                            DateTime startDate,
                            DateTime endDate,
-                           DateTime haveTime,
+                           int durationSale,
                            Image fullImage,
                            decimal maxPrice,
-                           bool isSold)
+                           string lotStatus)
         {
             Lot = lot;
             FullDescription = fullDescription;
             StartDate = startDate;
             EndDate = endDate;
-            HaveTime = haveTime;
+            DurationSale = durationSale;
             FullImage = fullImage;
             MaxPrice = maxPrice;
-            IsSold = isSold;
+            LotStatus = lotStatus;
         }
 
         public static Result<LotConcrete> Create(Lot lot,
                                                  string fullDescription,
                                                  DateTime startDate,
                                                  DateTime endDate,
-                                                 DateTime haveTime,
+                                                 int durationSale,
                                                  Image fullImage,
                                                  decimal maxPrice,
-                                                 bool isSold) =>
+                                                 string lotStatus) =>
             Result.Success(new LotConcrete(lot,
                                               fullDescription,
                                               startDate,
                                               endDate,
-                                              haveTime,
+                                              durationSale,
                                               fullImage,
                                               maxPrice,
-                                              isSold));
+                                              lotStatus));
 
     }
 }

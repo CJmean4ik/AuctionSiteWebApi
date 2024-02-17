@@ -1,17 +1,19 @@
-﻿namespace AuctionSite.Core.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AuctionSite.Core.Models
 {
     public class BetEntity
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public decimal Price { get; set; }
 
-        public Guid BuyerId { get; set; }
+        public int BuyerId { get; set; }
         public BuyerEntity? Buyer { get; set; }
 
-        public Guid LotId { get; set; }
+        public int LotId { get; set; }
         public LotConcreteEntity? Lot { get; set; }
 
-        public Guid CommentsId { get; set; }
+        public int CommentsId { get; set; }
         public CommentsEntity? Comments { get; set; }
     }
 }
