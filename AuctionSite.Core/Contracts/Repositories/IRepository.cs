@@ -1,10 +1,10 @@
 ﻿namespace AuctionSite.Core.Contracts.Repositories
 {
-    public interface IRepository<T> :
-        ICreateRepository<T>,
-        IUpdateRepository<T>,
-        IReadRepository<T>,
-        IDeleteRepository<T>
+    public interface IRepository<T,R> :
+        ICreateRepository<T,R>,
+        IUpdateRepository<T,R>,
+        IDeleteRepository<T,R>,
+        IReadRepository<T>
         where T : class
     {
 

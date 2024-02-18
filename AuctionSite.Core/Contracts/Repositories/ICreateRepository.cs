@@ -2,9 +2,9 @@
 
 namespace AuctionSite.Core.Contracts.Repositories
 {
-    public interface ICreateRepository<T>
+    public interface ICreateRepository<T,R>
         where T : class
     {
-        Task<Result> AddAsync(T entity);
+        Task<Result<R>> AddAsync(T entity);
     }
 }

@@ -1,6 +1,11 @@
-﻿using AuctionSite.Application.DTO;
+﻿using AuctionSite.API.Contracts;
+using AuctionSite.API.Services.ErrorValidation;
+using AuctionSite.API.DTO;
 using AuctionSite.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using AuctionSite.Core.Models;
+using AutoMapper;
 
 namespace AuctionSite.API.Controllers
 {
@@ -9,9 +14,18 @@ namespace AuctionSite.API.Controllers
     public class LotController : Controller
     {
         private readonly LotService _lotService;
-        public LotController(LotService lotService)
+        private readonly ImageService _imageService;
+        private readonly IErrorValidationHandler<List<ErrorModel>, ModelStateDictionary> _errorHandler;
+        private readonly IMapper _mapper;
+        public LotController(LotService lotService,
+                             IErrorValidationHandler<List<ErrorModel>, ModelStateDictionary> errorHandler,
+                             ImageService imageService,
+                             IMapper mapper)
         {
             _lotService = lotService;
+            _errorHandler = errorHandler;
+            _imageService = imageService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -25,47 +39,57 @@ namespace AuctionSite.API.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateLots([FromBody] UpdateLotDto updateLotDto)
         {
-            var result = await _lotService.UpdateLotAsync(updateLotDto);
+            var lot = Lot.Create(updateLotDto.Name,
+                updateLotDto.ShortDescription,
+                updateLotDto.CategoryName,null,updateLotDto.Id!.Value).Value;
+
+            var result = await _lotService.UpdateLotAsync(lot);
 
             if (result.IsFailure)
                 return CreateJsonResult("500", result.Error);
 
             return CreateJsonResult("200", result.Value);
         }
-
+     
         [HttpDelete]
-        public async Task<ActionResult> RemoveLots()
-        {
-            var result = await _lotService.GetLotsAsync();
+        public async Task<ActionResult> RemoveLots([FromQuery]int id)
+        {            
+            var result = await _lotService.RemoveLotAsync(id);
 
             if (result.IsFailure)
                 return CreateJsonResult("500", result.Error);
 
             return CreateJsonResult("200", result.Value);
         }
-
+            
         [HttpPost]
-        public async Task<ActionResult> AddLots()
+        public async Task<ActionResult> AddLots([FromForm] CreateLotDto createLotDto)
         {
-            var result = await _lotService.GetLotsAsync();
+            var lot = _mapper.Map<CreateLotDto, Lot>(createLotDto);
+
+            var result = await _lotService.AddLotAsync(lot);
 
             if (result.IsFailure)
                 return CreateJsonResult("500", result.Error);
 
             return CreateJsonResult("200", result.Value);
         }
+       
 
+        /*
         [HttpGet("/by/id")]
-        public async Task<ActionResult> GetByIdLots()
+        public async Task<ActionResult> GetByIdLots([FromQuery]int id)
         {
-            var result = await _lotService.GetLotsAsync();
+            var result = await _lotService.GetConcreteLotAsync(id);
 
             if (result.IsFailure)
                 return CreateJsonResult("500", result.Error);
 
             return CreateJsonResult("200", result.Value);
         }
+        */
 
+        /*
         [HttpGet("/by/page")]
         public async Task<ActionResult> GetByPageLots()
         {
@@ -76,7 +100,7 @@ namespace AuctionSite.API.Controllers
 
             return CreateJsonResult("200", result.Value);
         }
-
+        */
         private ActionResult CreateJsonResult(string statusName, object obj) =>
         Json(new
         {

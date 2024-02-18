@@ -14,6 +14,10 @@ namespace AuctionSite.DataAccess
         public DbSet<ReplyCommentsEntity> ReplyComments { get; set; }
         public DbSet<UserEntity> Users { get; set; }
 
+        public AuctionDbContext()
+        {
+        }
+
         public AuctionDbContext(DbContextOptions options) : base(options)
         {
             Database.EnsureCreated();

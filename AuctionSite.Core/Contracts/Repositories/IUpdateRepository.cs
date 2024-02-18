@@ -2,9 +2,9 @@
 
 namespace AuctionSite.Core.Contracts.Repositories
 {
-    public interface IUpdateRepository<T>
+    public interface IUpdateRepository<T, R>
                 where T : class
     {
-        Task<Result> UpdateAsync(T entity);
+        Task<Result<R>> UpdateAsync(T entity);
     }
 }

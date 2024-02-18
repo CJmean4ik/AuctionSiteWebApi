@@ -2,9 +2,9 @@
 
 namespace AuctionSite.Core.Contracts.Repositories
 {
-    public interface IDeleteRepository<T>
+    public interface IDeleteRepository<T,R>
          where T : class
     {
-        Task<Result> DeleteAsync(T entity);
+        Task<Result<R>> DeleteAsync(int id);
     }
 }

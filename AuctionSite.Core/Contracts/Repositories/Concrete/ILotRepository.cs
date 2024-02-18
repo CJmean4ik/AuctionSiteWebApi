@@ -3,8 +3,8 @@ using CSharpFunctionalExtensions;
 
 namespace AuctionSite.Core.Contracts.Repositories.Enitities
 {
-    public interface ILotRepository : IRepository<Lot>
+    public interface ILotRepository : IRepository<Lot,string>
     {
-        Task<Result> GetConcreteLotAsync(int id);
+        Task SaveChangeAsync();
     }
 }
