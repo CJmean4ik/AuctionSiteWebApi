@@ -1,4 +1,4 @@
-﻿using AuctionSite.Core.Contracts.Repositories.Enitities;
+﻿using AuctionSite.Core.Contracts.Repositories.Concrete;
 using AuctionSite.Core.Models;
 using AuctionSite.DataAccess.Components.UpdateComponents;
 using AutoMapper;

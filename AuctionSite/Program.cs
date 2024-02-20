@@ -1,11 +1,12 @@
 using AuctionSite.API.Contracts;
 using AuctionSite.API.Services.ErrorValidation;
 using AuctionSite.Application.Services;
-using AuctionSite.Core.Contracts.Repositories.Enitities;
+using AuctionSite.Core.Contracts.Repositories.Concrete;
 using AuctionSite.Core.Models;
 using AuctionSite.DataAccess;
 using AuctionSite.DataAccess.Components.UpdateComponents;
 using AuctionSite.DataAccess.Repositories;
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,12 +27,21 @@ namespace AuctionSite
                 optionsAction.UseSqlServer(builder.Configuration.GetConnectionString("AuctionDb"));
             });
 
+            builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlob")));
+
             builder.Services.AddScoped<IErrorValidationHandler<List<ErrorModel>, ModelStateDictionary>, ErrorValidationHandler>();
-            builder.Services.AddScoped<IModifierArgumentChanger<LotEntity, AuctionDbContext>, ModifierArgumentChanger<LotEntity, AuctionDbContext>>();           
+            builder.Services.AddScoped<IModifierArgumentChanger<LotEntity, AuctionDbContext>, ModifierArgumentChanger<LotEntity, AuctionDbContext>>();
             builder.Services.AddScoped<ILotRepository, LotRepository>();
 
+            var typeEnviroment = builder.Configuration["TypeApplicationEnviroment"];
+
+            if (typeEnviroment == "Local")           
+                builder.Services.AddScoped<IImageService, LocalImageService>();
+            
+            if (typeEnviroment == "Cloud")           
+                builder.Services.AddScoped<IImageService, BlobImageService>();
+                    
             builder.Services.AddScoped<LotService>();
-            builder.Services.AddScoped<ImageService>();
 
             var app = builder.Build();
 

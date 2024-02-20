@@ -1,4 +1,4 @@
-﻿using AuctionSite.Core.Contracts.Repositories.Enitities;
+﻿using AuctionSite.Core.Contracts.Repositories.Concrete;
 using AuctionSite.Core.Models;
 using Azure;
 using CSharpFunctionalExtensions;
@@ -48,8 +48,6 @@ namespace AuctionSite.Application.Services
                 return result;
 
             return Result.Success(result.Value);
-        }
-
-       
+        }  
     }
 }

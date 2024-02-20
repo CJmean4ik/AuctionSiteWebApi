@@ -14,12 +14,13 @@ namespace AuctionSite.API.Controllers
     public class LotController : Controller
     {
         private readonly LotService _lotService;
-        private readonly ImageService _imageService;
+        private readonly IImageService _imageService;
         private readonly IErrorValidationHandler<List<ErrorModel>, ModelStateDictionary> _errorHandler;
         private readonly IMapper _mapper;
+
         public LotController(LotService lotService,
                              IErrorValidationHandler<List<ErrorModel>, ModelStateDictionary> errorHandler,
-                             ImageService imageService,
+                             IImageService imageService,
                              IMapper mapper)
         {
             _lotService = lotService;
@@ -31,8 +32,8 @@ namespace AuctionSite.API.Controllers
         [HttpGet]
         public async Task<ActionResult> GetLots()
         {
-            var result = await _lotService.GetLotsAsync();
-  
+            var result = await _lotService.GetLotsAsync();        
+
             return CreateJsonResult("200", new { Count = result.Value.Count, List = result.Value });
         }
 

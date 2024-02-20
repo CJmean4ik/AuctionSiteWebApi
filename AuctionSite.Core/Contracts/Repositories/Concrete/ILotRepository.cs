@@ -1,7 +1,5 @@
 ﻿using AuctionSite.Core.Models;
-using CSharpFunctionalExtensions;
-
-namespace AuctionSite.Core.Contracts.Repositories.Enitities
+namespace AuctionSite.Core.Contracts.Repositories.Concrete
 {
     public interface ILotRepository : IRepository<Lot,string>
     {
