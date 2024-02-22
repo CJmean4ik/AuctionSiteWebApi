@@ -1,10 +1,7 @@
 ﻿using AuctionSite.Application.Model;
 using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata;
 
 namespace AuctionSite.Application.Services
 {
@@ -17,45 +14,97 @@ namespace AuctionSite.Application.Services
             _serviceClient = serviceClient;
         }
 
-        public Result<string> Delete(string fileName, ImageType imageType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Result<T>> GetImage<T>(string fileName, ImageType imageType) where T : class
+        public async Task<Result<Stream>> ReadImageAsync(string fileName, ImageType imageType)
         {
             try
             {
-                var containerName = CombinePathByImageType(imageType);
-                var clientContainer = _serviceClient.GetBlobContainerClient(containerName);
-                var blobClient = clientContainer.GetBlobClient(fileName);
+                var blobClient = GetBlobClient(imageType, fileName);
 
                 if (!await blobClient.ExistsAsync())
-                    return Result.Failure<T>($"Image blob by name: {fileName} not found!");
+                    return Result.Failure<Stream>($"Image blob by name: {fileName} not found!");
 
                 var blobResult = await blobClient.DownloadStreamingAsync();
 
-                if (typeof(T) != typeof(Stream))        
-                    return Result.Failure<T>($"The specified {typeof(T)} type for the T parameter is not valid for this method");
-                
-                return Result.Success((T)(object)blobResult.Value.Content);
+                return Result.Success(blobResult.Value.Content);
             }
             catch (Exception ex)
             {
-                return Result.Failure<T>(ex.Message);
+                return Result.Failure<Stream>(ex.Message);
+            }
+        }
+        public async Task<Result<string>> CreateImageAsync(IFormFile formFile, ImageType imageType)
+        {
+            try
+            {
+                var blobClient = GetBlobClient(imageType, formFile.FileName);
+
+                Stream stream = new MemoryStream();
+                await formFile.CopyToAsync(stream);
+                stream.Position = 0;
+
+                await blobClient.UploadAsync(stream);
+
+                return Result.Success($"Image by name {formFile.FileName} has been saved");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<string>(ex.Message);
+            }
+        }
+        public async Task<Result<string>> UpdateAsync(IFormFile newImage, string oldImage, ImageType imageType)
+        {
+            var blobClient = GetBlobClient(imageType, oldImage);
+
+            try
+            {
+                if (!(await blobClient.DeleteIfExistsAsync()))
+                    return Result.Failure<string>($"Blob file by image: {oldImage} doesnt exist!");
+
+                Stream stream = new MemoryStream();
+                await newImage.CopyToAsync(stream);
+                stream.Position = 0;
+                await blobClient.UploadAsync(stream);
+
+                return Result.Success($"Image by name {oldImage} has been updated");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<string>($"Failed to update blob file in Azure: {ex.Message}");
+            }
+        }
+        public async Task<Result<string>> DeleteAsync(string oldImage, ImageType imageType)
+        {
+            try
+            {
+                var blobClient = GetBlobClient(imageType, oldImage);
+
+                if (!(await blobClient.DeleteIfExistsAsync()))
+                    return Result.Failure<string>($"Blob file by name: {oldImage} doesnt exist!");
+
+                return Result.Success($"Blob file by name: {oldImage} has been deleted");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<string>($"Failed to delete blob file in Azure: {ex.Message}");
             }
         }
 
-        public Task<Result<string>> SaveImageAsync(IFormFile formFile, ImageType imageType)
+        private BlobClient GetBlobClient(ImageType imageType, string fileName)
         {
-            throw new NotImplementedException();
-        }
+            string containerName = CombinePathByImageType(imageType);
+            var clientContainer = _serviceClient.GetBlobContainerClient(containerName);
+            var blobClient = clientContainer.GetBlobClient(fileName);
 
+
+
+            return blobClient;
+        }
         private string CombinePathByImageType(ImageType imageType) => imageType switch
         {
             ImageType.PreviewImage => "previewimage",
             ImageType.FullImage => "fullimage",
             _ => "",
         };
+
     }
 }

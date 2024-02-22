@@ -1,19 +1,22 @@
 ﻿using AuctionSite.Application.Model;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace AuctionSite.Application.Services
 {
     public class LocalImageService : IImageService
     {
-        public async Task<Result<string>> SaveImageAsync(IFormFile formFile, ImageType imageType)
+        public async Task<Result<string>> CreateImageAsync(IFormFile formFile, ImageType imageType)
         {
             try
             {
-                var contentPath = CombinePathByImageType(imageType) + formFile.FileName;
+                var directory = CombinePathByImageType(imageType);
+                var fullPath = directory + formFile.FileName;
 
-                using (FileStream file = new FileStream(path: contentPath, FileMode.CreateNew))
+                if (!Directory.Exists(directory))
+                    Directory.CreateDirectory(directory);
+
+                using (FileStream file = new FileStream(path: fullPath, FileMode.CreateNew))
                     await formFile.CopyToAsync(file);
 
                 return Result.Success("Image has been saved. Name:  " + formFile.FileName);
@@ -23,37 +26,64 @@ namespace AuctionSite.Application.Services
                 return Result.Failure<string>(ex.Message);
             }
         }
-        public async Task<Result<T>> GetImage<T>(string fileName, ImageType imageType) where T : class
+        public async Task<Result<string>> DeleteAsync(string oldImage, ImageType imageType)
         {
-            string currentPath = CombinePathByImageType(imageType);
-            string imagePath = Path.Combine(currentPath, fileName);
+            string directory = CombinePathByImageType(imageType);
+            string imagePathOld = Path.Combine(directory, oldImage);
 
-            if (!File.Exists(imagePath))
-                return Result.Failure<T>($"Image by path: {imagePath} not found!");
+            if (!File.Exists(imagePathOld))
+                return Result.Failure<string>($"Image for update by path: {imagePathOld} not found!");
 
-            if (typeof(T) != typeof(PhysicalFileResult))
-                return Result.Failure<T>($"The specified {typeof(T)} type for the T parameter is not valid for this method");
+            await Task.Run(() => File.Delete(imagePathOld));
 
-            return Result.Success((T)(object)new PhysicalFileResult(imagePath, "image/jpeg"));
+            return Result.Success($"Image {imagePathOld} has been deleted!");
         }
-        public Result<string> Delete(string fileName, ImageType imageType)
+        public async Task<Result<Stream>> ReadImageAsync(string fileName, ImageType imageType)
         {
             string currentPath = CombinePathByImageType(imageType);
             string imagePath = Path.Combine(currentPath, fileName);
 
             if (!File.Exists(imagePath))
-                return Result.Failure<string>($"Image by path: {imagePath} not found!");
+                return Result.Failure<Stream>($"Image by path: {imagePath} not found!");
 
-            File.Delete(imagePath);
-            return Result.Success($"Image {fileName} has been deleted!");
+            try
+            {
+                FileStream fileStream = await Task.Run(() => File.Open(imagePath, FileMode.Open));
+                return Result.Success((Stream)fileStream);
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<Stream>($"Failed to open image file: {ex.Message}");
+            }
+        }        
+        public async Task<Result<string>> UpdateAsync(IFormFile newImage, string oldImage, ImageType imageType)
+        {
+            string directory = CombinePathByImageType(imageType);
+            string imagePathOld = Path.Combine(directory, oldImage);
+
+            if (!File.Exists(imagePathOld))
+                return Result.Failure<string>($"Image for update by path: {imagePathOld} not found!");
+
+            try
+            {
+                await Task.Run(() => File.Delete(imagePathOld));
+
+                using (FileStream fileStream = new FileStream(path: imagePathOld, FileMode.CreateNew))
+                    await newImage.CopyToAsync(fileStream);
+
+                return Result.Success($"Image {imagePathOld} has been deleted!");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<string>($"Failed to delete and update image file: {ex.Message}");
+            }
         }
 
         private string CombinePathByImageType(ImageType imageType) => imageType switch
         {
-            ImageType.PreviewImage => "C:\\ImageCatalog\\PreviewImage",
-            ImageType.FullImage => "C:\\ImageCatalog\\FullImage",
+            ImageType.PreviewImage => "C:\\ImageCatalog\\PreviewImage\\",
+            ImageType.FullImage => "C:\\ImageCatalog\\FullImage\\",
             _ => "",
         };
-
     }
 }

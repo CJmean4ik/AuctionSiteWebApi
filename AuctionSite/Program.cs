@@ -38,7 +38,7 @@ namespace AuctionSite
             if (typeEnviroment == "Local")           
                 builder.Services.AddScoped<IImageService, LocalImageService>();
             
-            if (typeEnviroment == "Cloud")           
+            if (typeEnviroment == "AzureBlob")           
                 builder.Services.AddScoped<IImageService, BlobImageService>();
                     
             builder.Services.AddScoped<LotService>();
