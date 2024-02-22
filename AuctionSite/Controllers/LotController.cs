@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using AuctionSite.Core.Models;
 using AutoMapper;
+using AuctionSite.Application.Services.Image;
 
 namespace AuctionSite.API.Controllers
 {
@@ -30,9 +31,9 @@ namespace AuctionSite.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetLots()
+        public async Task<ActionResult> GetLots([FromQuery]int page = 1)
         {
-            var result = await _lotService.GetLotsAsync();        
+            var result = await _lotService.GetLotsAsync(page);        
 
             return CreateJsonResult("200", new { Count = result.Value.Count, List = result.Value });
         }
@@ -75,33 +76,17 @@ namespace AuctionSite.API.Controllers
 
             return CreateJsonResult("200", result.Value);
         }
-       
-
-        /*
-        [HttpGet("/by/id")]
+      
+        [HttpGet("specific")]
         public async Task<ActionResult> GetByIdLots([FromQuery]int id)
         {
-            var result = await _lotService.GetConcreteLotAsync(id);
+            var result = await _lotService.GetSpecificLotAsync(id);
 
             if (result.IsFailure)
                 return CreateJsonResult("500", result.Error);
 
             return CreateJsonResult("200", result.Value);
         }
-        */
-
-        /*
-        [HttpGet("/by/page")]
-        public async Task<ActionResult> GetByPageLots()
-        {
-            var result = await _lotService.GetLotsAsync();
-
-            if (result.IsFailure)
-                return CreateJsonResult("500", result.Error);
-
-            return CreateJsonResult("200", result.Value);
-        }
-        */
         private ActionResult CreateJsonResult(string statusName, object obj) =>
         Json(new
         {

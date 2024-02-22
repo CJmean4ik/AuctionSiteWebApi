@@ -1,6 +1,6 @@
 ﻿using AuctionSite.API.DTO;
 using AuctionSite.Application.Model;
-using AuctionSite.Application.Services;
+using AuctionSite.Application.Services.Image;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuctionSite.API.Controllers

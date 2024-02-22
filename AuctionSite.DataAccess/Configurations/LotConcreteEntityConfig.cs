@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AuctionSite.DataAccess.Configurations
 {
-    internal class LotConcreteEntityConfig : IEntityTypeConfiguration<LotConcreteEntity>
+    internal class LotConcreteEntityConfig : IEntityTypeConfiguration<SpecificLotEntity>
     {
-        public void Configure(EntityTypeBuilder<LotConcreteEntity> builder)
+        public void Configure(EntityTypeBuilder<SpecificLotEntity> builder)
         {
             builder.Property(p => p.LotStatus)
                    .HasConversion<string>();

@@ -1,6 +1,5 @@
 ﻿using AuctionSite.Core.Contracts.Repositories.Concrete;
 using AuctionSite.Core.Models;
-using Azure;
 using CSharpFunctionalExtensions;
 
 namespace AuctionSite.Application.Services
@@ -24,7 +23,7 @@ namespace AuctionSite.Application.Services
         }
         public async Task<Result<List<Lot>>> GetLotsAsync(int page = 1, int pageSize = 10)
         {
-            var result = await _lotRepository.ReadLimitAsync(page,pageSize);
+            var result = await _lotRepository.ReadLimitAsync(page, pageSize);
 
             if (result.IsFailure)
                 return result;
@@ -48,6 +47,15 @@ namespace AuctionSite.Application.Services
                 return result;
 
             return Result.Success(result.Value);
-        }  
+        }
+        public async Task<Result<SpecificLot>> GetSpecificLotAsync(int id)
+        {
+            var result = await _lotRepository.GetSpecificLotAsync(id);
+
+            if (result.IsFailure)
+                return result;
+
+            return Result.Success(result.Value);
+        }
     }
 }

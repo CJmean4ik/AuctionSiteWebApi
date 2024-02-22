@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace AuctionSite.Core.Models
+﻿namespace AuctionSite.Core.Models
 {
     public class BetEntity
     {
@@ -11,7 +9,7 @@ namespace AuctionSite.Core.Models
         public BuyerEntity? Buyer { get; set; }
 
         public int LotId { get; set; }
-        public LotConcreteEntity? Lot { get; set; }
+        public SpecificLotEntity? Lot { get; set; }
 
         public int CommentsId { get; set; }
         public CommentsEntity? Comments { get; set; }

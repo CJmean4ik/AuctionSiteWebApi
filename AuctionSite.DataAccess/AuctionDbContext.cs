@@ -9,7 +9,7 @@ namespace AuctionSite.DataAccess
         public DbSet<BetEntity> Bets { get; set; }
         public DbSet<BuyerEntity> Buyers { get; set; }
         public DbSet<CommentsEntity> Comments { get; set; }
-        public DbSet<LotConcreteEntity> LotConcretes { get; set; }
+        public DbSet<SpecificLotEntity> SpecificLot { get; set; }
         public DbSet<LotEntity> Lots { get; set; }
         public DbSet<ReplyCommentsEntity> ReplyComments { get; set; }
         public DbSet<UserEntity> Users { get; set; }

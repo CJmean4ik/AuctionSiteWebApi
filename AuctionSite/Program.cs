@@ -1,6 +1,7 @@
 using AuctionSite.API.Contracts;
 using AuctionSite.API.Services.ErrorValidation;
 using AuctionSite.Application.Services;
+using AuctionSite.Application.Services.Image;
 using AuctionSite.Core.Contracts.Repositories.Concrete;
 using AuctionSite.Core.Models;
 using AuctionSite.DataAccess;

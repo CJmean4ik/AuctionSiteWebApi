@@ -4,23 +4,27 @@ namespace AuctionSite.Core.Models
 {
     public class Bet
     {
-        private readonly List<Comments> _comments = new List<Comments>();
+        private readonly List<ReplyComments> _replyComments = new List<ReplyComments>();
 
         public int Id { get; }
         public decimal Price { get; }
-        public Buyer Buyer { get; }
-        public IReadOnlyCollection<Comments> Comments => _comments;
+        public string BuyerName { get; set; }
+        public string BuyerLastName { get; set; }
+        public string Comments { get; set; }
+        public IReadOnlyCollection<ReplyComments> ReplyComments => _replyComments;
 
-        public void AddComments(List<Comments> comments) => _comments.AddRange(comments);
+        public void AddReplyComments(List<ReplyComments> comments) => _replyComments.AddRange(comments);
 
-        private Bet(int id, decimal price, Buyer buyer)
+        private Bet(int id, decimal price,string buyerName, string buyerLastName,string comments)
         {
             Id = id;
             Price = price;
-            Buyer = buyer;
+            BuyerName = buyerName;
+            BuyerLastName = buyerLastName;
+            Comments = comments;
         }
 
-        public static Result<Bet> Create(decimal price, Buyer buyer, int id = 0)
-            => Result.Success(new Bet(id, price, buyer));
+        public static Result<Bet> Create(decimal price, string buyerName, string buyerLastName,string comments, int id = 0)
+            => Result.Success(new Bet(id, price, buyerName, buyerLastName,comments));
     }
 }

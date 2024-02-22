@@ -2,7 +2,7 @@
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Http;
 
-namespace AuctionSite.Application.Services
+namespace AuctionSite.Application.Services.Image
 {
     public class LocalImageService : IImageService
     {
@@ -55,7 +55,7 @@ namespace AuctionSite.Application.Services
             {
                 return Result.Failure<Stream>($"Failed to open image file: {ex.Message}");
             }
-        }        
+        }
         public async Task<Result<string>> UpdateAsync(IFormFile newImage, string oldImage, ImageType imageType)
         {
             string directory = CombinePathByImageType(imageType);

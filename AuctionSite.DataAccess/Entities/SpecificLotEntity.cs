@@ -3,7 +3,7 @@
 namespace AuctionSite.Core.Models
 {
     [Table("LotConcrete")]
-    public class LotConcreteEntity : LotEntity
+    public class SpecificLotEntity : LotEntity
     {
         public string FullDescription { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }

@@ -3,7 +3,7 @@ using Azure.Storage.Blobs;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Http;
 
-namespace AuctionSite.Application.Services
+namespace AuctionSite.Application.Services.Image
 {
     public class BlobImageService : IImageService
     {
@@ -57,7 +57,7 @@ namespace AuctionSite.Application.Services
 
             try
             {
-                if (!(await blobClient.DeleteIfExistsAsync()))
+                if (!await blobClient.DeleteIfExistsAsync())
                     return Result.Failure<string>($"Blob file by image: {oldImage} doesnt exist!");
 
                 Stream stream = new MemoryStream();
@@ -78,7 +78,7 @@ namespace AuctionSite.Application.Services
             {
                 var blobClient = GetBlobClient(imageType, oldImage);
 
-                if (!(await blobClient.DeleteIfExistsAsync()))
+                if (!await blobClient.DeleteIfExistsAsync())
                     return Result.Failure<string>($"Blob file by name: {oldImage} doesnt exist!");
 
                 return Result.Success($"Blob file by name: {oldImage} has been deleted");

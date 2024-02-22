@@ -2,11 +2,11 @@
 
 namespace AuctionSite.Core.Models
 {
-    public class LotConcrete
+    public class SpecificLot
     {
         private readonly List<Bet> _bets = new List<Bet>();
 
-        public Lot Lot { get; }
+        public Lot? Lot { get; }
         public string FullDescription { get; } = string.Empty;
         public DateTime StartDate { get; }
         public DateTime EndDate { get; }
@@ -17,9 +17,9 @@ namespace AuctionSite.Core.Models
 
         public IReadOnlyCollection<Bet> Bets => _bets;
 
-        public void AddBets(List<Bet> bets) => bets.AddRange(bets);
+        public void AddBets(List<Bet> bets) => _bets.AddRange(bets);
 
-        public LotConcrete(Lot lot,
+        private SpecificLot(Lot? lot,
                            string fullDescription,
                            DateTime startDate,
                            DateTime endDate,
@@ -38,7 +38,7 @@ namespace AuctionSite.Core.Models
             LotStatus = lotStatus;
         }
 
-        public static Result<LotConcrete> Create(Lot lot,
+        public static Result<SpecificLot> Create(Lot? lot,
                                                  string fullDescription,
                                                  DateTime startDate,
                                                  DateTime endDate,
@@ -46,7 +46,7 @@ namespace AuctionSite.Core.Models
                                                  Image fullImage,
                                                  decimal maxPrice,
                                                  string lotStatus) =>
-            Result.Success(new LotConcrete(lot,
+            Result.Success(new SpecificLot(lot,
                                               fullDescription,
                                               startDate,
                                               endDate,

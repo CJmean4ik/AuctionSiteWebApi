@@ -5,6 +5,7 @@ using AutoMapper;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace AuctionSite.DataAccess.Repositories
 {
     public class LotRepository : ILotRepository
@@ -49,17 +50,11 @@ namespace AuctionSite.DataAccess.Repositories
         {
             if (newLot is null)
                 return Result.Failure<string>("There is no entity to update");
+
             try
             {
                 var oldLotEntity = await _dbContext.Lots
                     .Where(w => w.Id == newLot.Id)
-                    .Select(s => new LotEntity
-                    {
-                        Id = s.Id,
-                        Name = s.Name,
-                        CategoryName = s.CategoryName,
-                        ShortDescription = s.ShortDescription
-                    })
                     .FirstOrDefaultAsync();
 
                 if (oldLotEntity is null)
@@ -116,6 +111,31 @@ namespace AuctionSite.DataAccess.Repositories
             catch (Exception ex)
             {
                 return Result.Failure<string>(ex.Message);
+            }
+        }
+        public async Task<Result<SpecificLot>> GetSpecificLotAsync(int id)
+        {
+            try
+            {
+                var lotConcreteEntity = await _dbContext.SpecificLot
+                                                    .Include(s => s.Bets.Take(5))!
+                                                          .ThenInclude(b => b.Buyer)
+                                                         .Include(s => s.Bets)!
+                                                          .ThenInclude(b => b.Comments)
+                                                           .ThenInclude(c => c.ReplyComments)
+                                                    .Where(s => s.Id == id)
+                                                    .FirstOrDefaultAsync();
+
+                if (lotConcreteEntity is null)
+                    return Result.Failure<SpecificLot>($"Concrete lot by id: {id} not found!");
+
+                var lot = _mapper.Map<SpecificLotEntity, SpecificLot>(lotConcreteEntity);
+
+                return Result.Success(lot);
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<SpecificLot>(ex.Message);
             }
         }
     }
