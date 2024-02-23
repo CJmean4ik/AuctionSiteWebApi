@@ -6,6 +6,7 @@ using AuctionSite.Application.Services;
 using AuctionSite.Application.Services.Image;
 using AuctionSite.Core.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -13,6 +14,7 @@ namespace AuctionSite.API.Controllers
 {
     [ApiController]
     [Route("api/v1/lots")]
+    [Authorize(Roles = "Admin")]
     public class LotController : Controller
     {
         private readonly LotService _lotService;
@@ -32,6 +34,7 @@ namespace AuctionSite.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult> GetLots([FromQuery] int page = 1)
         {
             var result = await _lotService.GetLotsAsync(page);
@@ -95,6 +98,7 @@ namespace AuctionSite.API.Controllers
         }
 
         [HttpGet("specific")]
+        [AllowAnonymous]
         public async Task<ActionResult> GetByIdLots([FromQuery] int id)
         {
             var result = await _lotService.GetSpecificLotAsync(id);
@@ -104,6 +108,7 @@ namespace AuctionSite.API.Controllers
 
             return CreateJsonResult("200", result.Value);
         }
+
         private ActionResult CreateJsonResult(string statusName, object obj) =>
         Json(new
         {

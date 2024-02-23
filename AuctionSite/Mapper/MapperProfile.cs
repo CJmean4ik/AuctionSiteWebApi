@@ -1,6 +1,9 @@
 ﻿using AuctionSite.API.DTO;
+using AuctionSite.DataAccess.Entities;
 using AuctionSite.Core.Models;
 using AutoMapper;
+using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Routing.Constraints;
 
 namespace AuctionSite.API.Mapper
 {
@@ -64,31 +67,50 @@ namespace AuctionSite.API.Mapper
                                               string.IsNullOrEmpty(entity.FullImage) ? null : Image.Create(entity.FullImage, 5000).Value,
                                              entity.MaxPrice,
                                              entity.LotStatus.ToString()).Value)
-            .ForMember(dest => dest.Bets, opt => opt.MapFrom(src => MapBets(src.Bets)));
+            .ForMember(dest => dest.Bets, opt => opt.MapFrom(src => src.Bets!.Select(s => MapBet(s))));
+
+            CreateMap<BuyerEntity, Buyer>()
+                .ConstructUsing(entity => MapUser(entity));
+
+            CreateMap<Buyer, BuyerEntity>()
+             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+             .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.User.Password))
+             .ForMember(dest => dest.PasswordSalt, opt => opt.MapFrom(src => src.User.PasswordSalt))
+             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.User.Id))
+             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.User.Role))
+             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+             .ForMember(dest => dest.SecondName, opt => opt.MapFrom(src => src.SecondName));
         }
-        private List<Bet?> MapBets(List<BetEntity>? bets)
+        private Buyer MapUser(BuyerEntity buyerEntity)
         {
-            if (bets == null)
-                return new List<Bet?>();
+            var user = User.Create(buyerEntity.Email, buyerEntity.Role, buyerEntity.Id).Value;
+            user.SetPassword(buyerEntity.Password);
+            user.SetSalt(buyerEntity.PasswordSalt);
 
-            return bets.Select(s =>
+            var buyer = Buyer.Create(buyerEntity.FirstName,buyerEntity.SecondName,user, buyerEntity.Id).Value;
+            return buyer;
+        }
+        private Bet? MapBet(BetEntity? betEntity)
+        {
+            if (betEntity == null)
+                return null;
+
+            var buyer = betEntity.Buyer;
+            if (buyer == null)
+                return null;
+
+            string comments = betEntity.Comments?.Text;
+
+            var bet = Bet.Create(betEntity.Price, buyer.FirstName, buyer.SecondName, comments, betEntity.Id).Value;
+
+            if (betEntity.Comments != null && betEntity.Comments.ReplyComments != null)
             {
-                var buyer = s.Buyer;
-                if (buyer == null)
-                    return null;
+                var replyComments = betEntity.Comments.ReplyComments.Select(c =>
+                    ReplyComments.Create(c.Text, c.UserName).Value).ToList();
+                bet.AddReplyComments(replyComments);
+            }
 
-
-                var bet = Bet.Create(s.Price, buyer.FirstName, buyer.SecondName, s.Comments?.Text).Value;
-
-                if (s.Comments != null && s.Comments.ReplyComments != null)
-                {
-                    var replyComments = s.Comments.ReplyComments.Select(c =>
-                        ReplyComments.Create(c.Text, c.UserName).Value).ToList();
-                    bet.AddReplyComments(replyComments);
-                }
-
-                return bet;
-            }).Where(b => b != null).ToList();
+            return bet;
         }
     }
 }

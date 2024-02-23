@@ -1,4 +1,4 @@
-﻿using AuctionSite.Core.Models;
+﻿using AuctionSite.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

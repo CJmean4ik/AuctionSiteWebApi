@@ -1,12 +1,14 @@
 ﻿using AuctionSite.API.DTO;
 using AuctionSite.Application.Model;
 using AuctionSite.Application.Services.Image;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuctionSite.API.Controllers
 {
     [ApiController]
     [Route("api/v1/lots/images")]
+    [Authorize(Roles = "Admin")]
     public class ImageController : Controller
     {
         private readonly IImageService _imageService;
@@ -17,6 +19,7 @@ namespace AuctionSite.API.Controllers
         }
 
         [HttpGet("{imageType}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetImage([FromQuery] string fileName, ImageType imageType)
         {
             var result = await _imageService.ReadImageAsync(fileName, imageType);

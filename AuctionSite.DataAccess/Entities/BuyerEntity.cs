@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AuctionSite.Core.Models
+namespace AuctionSite.DataAccess.Entities
 {
     [Table("Buyer")]
     public class BuyerEntity : UserEntity

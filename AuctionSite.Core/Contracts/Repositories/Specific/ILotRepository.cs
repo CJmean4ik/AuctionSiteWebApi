@@ -1,7 +1,7 @@
 ﻿using AuctionSite.Core.Models;
 using CSharpFunctionalExtensions;
 
-namespace AuctionSite.Core.Contracts.Repositories.Concrete
+namespace AuctionSite.Core.Contracts.Repositories.Specific
 {
     public interface ILotRepository : 
         IReadRepository<Lot>,

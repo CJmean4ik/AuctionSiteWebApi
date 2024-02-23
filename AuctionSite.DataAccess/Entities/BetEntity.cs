@@ -1,4 +1,4 @@
-﻿namespace AuctionSite.Core.Models
+﻿namespace AuctionSite.DataAccess.Entities
 {
     public class BetEntity
     {

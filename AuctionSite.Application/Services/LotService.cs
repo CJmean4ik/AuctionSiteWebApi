@@ -1,5 +1,4 @@
-﻿using AuctionSite.Application.Services.Image;
-using AuctionSite.Core.Contracts.Repositories.Concrete;
+﻿using AuctionSite.Core.Contracts.Repositories.Specific;
 using AuctionSite.Core.Models;
 using CSharpFunctionalExtensions;
 

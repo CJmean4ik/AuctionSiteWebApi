@@ -1,4 +1,4 @@
-﻿using AuctionSite.Core.Models;
+﻿using AuctionSite.DataAccess.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace AuctionSite.API.DTO

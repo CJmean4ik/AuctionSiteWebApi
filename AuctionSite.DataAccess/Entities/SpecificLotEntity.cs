@@ -1,7 +1,7 @@
 ﻿using AuctionSite.DataAccess.Components.UpdateComponents;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AuctionSite.Core.Models
+namespace AuctionSite.DataAccess.Entities
 {
     [Table("LotConcrete")]
     public class SpecificLotEntity : LotEntity

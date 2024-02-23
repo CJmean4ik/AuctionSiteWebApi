@@ -1,5 +1,6 @@
-﻿using AuctionSite.Core.Contracts.Repositories.Concrete;
+﻿using AuctionSite.Core.Contracts.Repositories.Specific;
 using AuctionSite.Core.Models;
+using AuctionSite.DataAccess.Entities;
 using AuctionSite.DataAccess.Components.UpdateComponents;
 using AutoMapper;
 using CSharpFunctionalExtensions;

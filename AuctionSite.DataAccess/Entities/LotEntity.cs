@@ -1,6 +1,6 @@
 ﻿using AuctionSite.DataAccess.Components.UpdateComponents;
 
-namespace AuctionSite.Core.Models
+namespace AuctionSite.DataAccess.Entities
 {
     public class LotEntity
     {
