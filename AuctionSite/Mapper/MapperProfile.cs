@@ -15,12 +15,23 @@ namespace AuctionSite.API.Mapper
                                                 !string.IsNullOrEmpty(entity.ImagePreview.FileName) ?
                                                 Image.Create(entity.ImagePreview.FileName, 5000).Value : null, 0).Value);
 
-            CreateMap<UpdateLotDto, Lot>()
-           .ConstructUsing(entity => Lot.Create(entity.Name,
-                                                entity.ShortDescription,
-                                                 entity.CategoryName,
-                                                 null,
-                                                 entity.Id).Value);
+            CreateMap<UpdateLotDto, SpecificLot>()
+           .ConstructUsing(entity =>SpecificLot.Create(Lot.Create(entity.Name, entity.ShortDescription, entity.CategoryName, null, entity.Id).Value,
+                                                      entity.FullDescription,
+                                                      null,
+                                                      null,
+                                                      entity.DurationSale,
+                                                      null,
+                                                      0,
+                                                      entity.LotStatus == null ? "" : entity.LotStatus.ToString()).Value);
+
+            CreateMap<SpecificLot, SpecificLotEntity>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(m => m.Lot.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(m => m.Lot.Name))
+                .ForMember(dest => dest.ShortDescription, opt => opt.MapFrom(m => m.Lot.ShortDescription))
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(m => m.Lot.CategoryName))
+                .ForMember(dest => dest.ImagePreview, opt => opt.MapFrom(m => m.Lot.ImagePreview))
+                .ForMember(dest => dest.FullImage, opt => opt.MapFrom(m => m.FullImage));
 
             CreateMap<Lot, LotEntity>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(map => map.Id))
@@ -45,7 +56,7 @@ namespace AuctionSite.API.Mapper
                                               string.IsNullOrEmpty(entity.FullImage) ? null : Image.Create(entity.FullImage, 5000).Value,
                                              entity.MaxPrice,
                                              entity.LotStatus.ToString()).Value)
-            .ForMember(dest => dest.Bets, opt => opt.MapFrom(src => MapBets(src.Bets)));           
+            .ForMember(dest => dest.Bets, opt => opt.MapFrom(src => MapBets(src.Bets)));
         }
         private List<Bet?> MapBets(List<BetEntity>? bets)
         {

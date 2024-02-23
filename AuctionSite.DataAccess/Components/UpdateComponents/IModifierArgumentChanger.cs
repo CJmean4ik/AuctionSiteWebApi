@@ -1,12 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace AuctionSite.DataAccess.Components.UpdateComponents
 {
-    public interface IModifierArgumentChanger<T, C>
-        where T : class, new()
+    public interface IModifierArgumentChanger<C>
         where C : DbContext, new()
     {
-        void ChangeAndAttachValue(C context, T oldEntity);
-        void SearchModifierProperty(T oldEntity, T newEntity);
+       IEnumerable<PropertyInfo> MarkedModifierProperty<T>(T oldEntity, T newEntity, C context);
     }
 }

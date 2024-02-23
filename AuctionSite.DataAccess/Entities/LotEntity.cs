@@ -7,9 +7,9 @@ namespace AuctionSite.Core.Models
         [IgnoreDuringSelectionAttribute]
         public int Id { get; set; }
 
-        public string Name { get; set; } = string.Empty;
-        public string ShortDescription { get; set; } = string.Empty;
-        public string CategoryName { get; set; } = string.Empty;
+        public string? Name { get; set; }
+        public string? ShortDescription { get; set; }
+        public string? CategoryName { get; set; }
 
         [IgnoreDuringSelectionAttribute]
         public string ImagePreview { get; set; } = string.Empty;

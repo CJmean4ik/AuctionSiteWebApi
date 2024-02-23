@@ -11,11 +11,11 @@ namespace AuctionSite.DataAccess.Repositories
     public class LotRepository : ILotRepository
     {
         private readonly AuctionDbContext _dbContext;
-        private readonly IModifierArgumentChanger<LotEntity, AuctionDbContext> _argumentChanger;
+        private readonly IModifierArgumentChanger<AuctionDbContext> _argumentChanger;
         private readonly IMapper _mapper;
 
         public LotRepository(AuctionDbContext dbContext,
-                             IModifierArgumentChanger<LotEntity, AuctionDbContext> argumentChanger,
+                             IModifierArgumentChanger<AuctionDbContext> argumentChanger,
                              IMapper mapper)
         {
             _dbContext = dbContext;
@@ -62,8 +62,7 @@ namespace AuctionSite.DataAccess.Repositories
 
                 var newLotEntity = _mapper.Map<Lot, LotEntity>(newLot);
 
-                _argumentChanger.SearchModifierProperty(oldLotEntity, newLotEntity);
-                _argumentChanger.ChangeAndAttachValue(_dbContext, oldLotEntity);
+                _argumentChanger.MarkedModifierProperty<LotEntity>(oldLotEntity, newLotEntity,_dbContext);
 
                 await SaveChangeAsync();
 
@@ -136,6 +135,31 @@ namespace AuctionSite.DataAccess.Repositories
             catch (Exception ex)
             {
                 return Result.Failure<SpecificLot>(ex.Message);
+            }
+        }
+        public async Task<Result<string>> UpdateSpecificLotAsync(SpecificLot newLot)
+        {
+            if (newLot is null)
+                return Result.Failure<string>("There is no entity to update");
+            try
+            {
+                var oldLotEntity = await _dbContext.SpecificLot
+                   .Where(w => w.Id == newLot.Lot!.Id)
+                   .FirstOrDefaultAsync();
+
+                if (oldLotEntity is null)
+                    return Result.Failure<string>($"The lot with this id: {newLot.Lot.Id} does not exist");
+
+                var newLotEntity = _mapper.Map<SpecificLot, SpecificLotEntity>(newLot);
+                var property = _argumentChanger.MarkedModifierProperty<SpecificLotEntity>(oldLotEntity, newLotEntity, _dbContext);
+
+                await SaveChangeAsync();
+
+                return Result.Success("The entity has been updated: " + newLot.Lot.Id);
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<string>(ex.Message);
             }
         }
     }

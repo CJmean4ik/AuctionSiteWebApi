@@ -1,4 +1,5 @@
-﻿using AuctionSite.Core.Contracts.Repositories.Concrete;
+﻿using AuctionSite.Application.Services.Image;
+using AuctionSite.Core.Contracts.Repositories.Concrete;
 using AuctionSite.Core.Models;
 using CSharpFunctionalExtensions;
 
@@ -7,6 +8,7 @@ namespace AuctionSite.Application.Services
     public class LotService
     {
         private readonly ILotRepository _lotRepository;
+
         public LotService(ILotRepository lotRepository)
         {
             _lotRepository = lotRepository;
@@ -33,6 +35,15 @@ namespace AuctionSite.Application.Services
         public async Task<Result<string>> UpdateLotAsync(Lot lot)
         {
             var result = await _lotRepository.UpdateAsync(lot);
+
+            if (result.IsFailure)
+                return result;
+
+            return Result.Success(result.Value);
+        }
+        public async Task<Result<string>> UpdateSpecificLotAsync(SpecificLot lot)
+        {
+            var result = await _lotRepository.UpdateSpecificLotAsync(lot);
 
             if (result.IsFailure)
                 return result;

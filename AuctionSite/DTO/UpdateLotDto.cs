@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AuctionSite.Core.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace AuctionSite.API.DTO
 {
@@ -9,14 +10,10 @@ namespace AuctionSite.API.DTO
 
         public string? Name { get; set; }
         public string? ShortDescription { get; set; }
-        public string? CategoryName { get; set; }
-
-        /*
-        public string? FullDescription { get; set; } = string.Empty;
-        public DateTime? EndDate { get; set; }
+        public string? CategoryName { get; set; }      
+        public string? FullDescription { get; set; }
         public int? DurationSale { get; set; }
-        public string? FullImage { get; set; } = string.Empty;
         public LotStatus? LotStatus { get; set; }
-        */
+        
     }
 }

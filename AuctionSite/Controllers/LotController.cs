@@ -39,17 +39,15 @@ namespace AuctionSite.API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateLots([FromBody] UpdateLotDto updateLotDto)
+        public async Task<ActionResult> UpdateLots([FromForm] UpdateLotDto updateLotDto)
         {
-            var lot = Lot.Create(updateLotDto.Name,
-                updateLotDto.ShortDescription,
-                updateLotDto.CategoryName,null,updateLotDto.Id!.Value).Value;
-
-            var result = await _lotService.UpdateLotAsync(lot);
+            var specifiLot = _mapper.Map<SpecificLot>(updateLotDto);
+             
+            var result = await _lotService.UpdateSpecificLotAsync(specifiLot);
 
             if (result.IsFailure)
                 return CreateJsonResult("500", result.Error);
-
+         
             return CreateJsonResult("200", result.Value);
         }
      

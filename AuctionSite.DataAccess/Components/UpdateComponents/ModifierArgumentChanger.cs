@@ -3,20 +3,13 @@ using System.Reflection;
 
 namespace AuctionSite.DataAccess.Components.UpdateComponents
 {
-    public class ModifierArgumentChanger<T, C> : IModifierArgumentChanger<T, C> 
-        where T : class, new()
+    public class ModifierArgumentChanger<C> : IModifierArgumentChanger<C>
         where C : DbContext, new()
 
     {
-        private List<Func<T, PropertyInfo>> _valuesChanger;
-
-        public ModifierArgumentChanger()
+        public IEnumerable<PropertyInfo> MarkedModifierProperty<T>(T oldEntity, T newEntity, C context)
         {
-            _valuesChanger = new List<Func<T, PropertyInfo>>();
-        }
-
-        public void SearchModifierProperty(T oldEntity, T newEntity)
-        {
+            List<PropertyInfo> propertyInfos = new List<PropertyInfo>();
             Type enityType = typeof(T);
             var properties = enityType.GetProperties()
                 .Where(prop => prop.GetCustomAttribute<IgnoreDuringSelectionAttribute>() == null);
@@ -26,25 +19,18 @@ namespace AuctionSite.DataAccess.Components.UpdateComponents
                 var prop = enityType.GetProperty(property.Name)!;
                 var oldValue = prop.GetValue(oldEntity);
                 var newValue = prop.GetValue(newEntity);
-
+              
+                if ((newValue is DateTime time) && time == DateTime.Parse("01.01.0001 00:00:00"))
+                    continue;
+               
                 if (newValue != default && !oldValue!.Equals(newValue))
                 {
-                    _valuesChanger.Add((oldChangeEntity) =>
-                    {
-                        prop.SetValue(oldChangeEntity, newValue);
-                        return prop;
-                    });
+                    prop.SetValue(oldEntity, newValue);
+                    context.Entry(oldEntity!).Property(prop.Name).IsModified = true;
+                    propertyInfos.Add(property);
                 }
             }
-        }
-
-        public void ChangeAndAttachValue(C context, T oldEntity)
-        {
-            foreach (var valueChanger in _valuesChanger)
-            {
-                var prop = valueChanger.Invoke(oldEntity);
-                context.Entry(oldEntity).Property(prop.Name).IsModified = true;
-            }
+            return propertyInfos;
         }
     }
 }

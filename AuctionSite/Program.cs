@@ -31,7 +31,7 @@ namespace AuctionSite
             builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlob")));
 
             builder.Services.AddScoped<IErrorValidationHandler<List<ErrorModel>, ModelStateDictionary>, ErrorValidationHandler>();
-            builder.Services.AddScoped<IModifierArgumentChanger<LotEntity, AuctionDbContext>, ModifierArgumentChanger<LotEntity, AuctionDbContext>>();
+            builder.Services.AddScoped<IModifierArgumentChanger<AuctionDbContext>>(opt => new ModifierArgumentChangerDecorator<AuctionDbContext>(new ModifierArgumentChanger<AuctionDbContext>()));
             builder.Services.AddScoped<ILotRepository, LotRepository>();
 
             var typeEnviroment = builder.Configuration["TypeApplicationEnviroment"];
