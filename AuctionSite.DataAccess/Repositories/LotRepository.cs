@@ -73,11 +73,11 @@ namespace AuctionSite.DataAccess.Repositories
                 return Result.Failure<string>(ex.Message);
             }
         }
-        public async Task<Result<string>> AddAsync(Lot entity)
+        public async Task<Result<string>> AddAsync(SpecificLot entity)
         {
             try
             {
-                var lotEntity = _mapper.Map<Lot, LotEntity>(entity);
+                var lotEntity = _mapper.Map<SpecificLot, SpecificLotEntity>(entity);
 
                 await _dbContext.Lots.AddAsync(lotEntity);
 

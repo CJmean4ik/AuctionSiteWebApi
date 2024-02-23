@@ -11,15 +11,24 @@ namespace AuctionSite.Application.Services.Image
             try
             {
                 var directory = CombinePathByImageType(imageType);
-                var fullPath = directory + formFile.FileName;
-
+                var name = formFile.FileName;
+                var fullPath = directory + name;
+                
                 if (!Directory.Exists(directory))
                     Directory.CreateDirectory(directory);
 
+                if (!File.Exists(fullPath))
+                {
+                    int index = new Random(formFile.FileName.GetHashCode()).Next(1, 10000);
+                    string imagecontentType = formFile.FileName.Split(".").Last();
+                    name = formFile.Name + index + "." + imagecontentType;
+                    fullPath = directory + name;
+                }
+                
                 using (FileStream file = new FileStream(path: fullPath, FileMode.CreateNew))
                     await formFile.CopyToAsync(file);
 
-                return Result.Success("Image has been saved. Name:  " + formFile.FileName);
+                return Result.Success(name);
             }
             catch (Exception ex)
             {

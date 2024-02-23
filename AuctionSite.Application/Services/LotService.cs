@@ -14,7 +14,7 @@ namespace AuctionSite.Application.Services
             _lotRepository = lotRepository;
         }
 
-        public async Task<Result<string>> AddLotAsync(Lot lot)
+        public async Task<Result<string>> AddLotAsync(SpecificLot lot)
         {
             var result = await _lotRepository.AddAsync(lot);
 

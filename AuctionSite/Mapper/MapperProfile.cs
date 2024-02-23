@@ -8,15 +8,23 @@ namespace AuctionSite.API.Mapper
     {
         public MapperProfile()
         {
-            CreateMap<CreateLotDto, Lot>()
-                .ConstructUsing(entity => Lot.Create(entity.Name,
-                                                entity.ShortDescription,
-                                                entity.CategoryName,
-                                                !string.IsNullOrEmpty(entity.ImagePreview.FileName) ?
-                                                Image.Create(entity.ImagePreview.FileName, 5000).Value : null, 0).Value);
+            CreateMap<CreateLotDto, SpecificLot>()
+                .ConstructUsing(entity => SpecificLot
+                .Create(Lot
+                    .Create(entity.Name,
+                            entity.ShortDescription,
+                            entity.CategoryName,
+                            Image.Create(entity.ImagePreviewName, 5000).Value, 0).Value,
+                    entity.FullDescription,
+                    entity.StartDate,
+                    DateTime.Now.AddDays((double)entity.DurationSale!),
+                    entity.DurationSale,
+                   Image.Create(entity.FullImageName, 0).Value,
+                   0,
+                   entity.LotStatus.ToString()).Value);
 
             CreateMap<UpdateLotDto, SpecificLot>()
-           .ConstructUsing(entity =>SpecificLot.Create(Lot.Create(entity.Name, entity.ShortDescription, entity.CategoryName, null, entity.Id).Value,
+           .ConstructUsing(entity => SpecificLot.Create(Lot.Create(entity.Name, entity.ShortDescription, entity.CategoryName, null, entity.Id).Value,
                                                       entity.FullDescription,
                                                       null,
                                                       null,
@@ -26,12 +34,12 @@ namespace AuctionSite.API.Mapper
                                                       entity.LotStatus == null ? "" : entity.LotStatus.ToString()).Value);
 
             CreateMap<SpecificLot, SpecificLotEntity>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(m => m.Lot.Id))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(m => m.Lot.Name))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(m => m.Lot!.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(m => m.Lot!.Name))
                 .ForMember(dest => dest.ShortDescription, opt => opt.MapFrom(m => m.Lot.ShortDescription))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(m => m.Lot.CategoryName))
-                .ForMember(dest => dest.ImagePreview, opt => opt.MapFrom(m => m.Lot.ImagePreview))
-                .ForMember(dest => dest.FullImage, opt => opt.MapFrom(m => m.FullImage));
+                .ForMember(dest => dest.ImagePreview, opt => opt.MapFrom(m => m.Lot.ImagePreview!.Name))
+                .ForMember(dest => dest.FullImage, opt => opt.MapFrom(m => m.FullImage!.Name));
 
             CreateMap<Lot, LotEntity>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(map => map.Id))
