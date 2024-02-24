@@ -17,7 +17,7 @@ namespace AuctionSite.API.Mapper
                     .Create(entity.Name,
                             entity.ShortDescription,
                             entity.CategoryName,
-                            Image.Create(entity.ImagePreviewName, 5000).Value, 0).Value,
+                            Image.Create(entity.ImagePreviewName, 5000).Value, 0,entity.BuyerId).Value,
                     entity.FullDescription,
                     entity.StartDate,
                     DateTime.Now.AddDays((double)entity.DurationSale!),
@@ -27,7 +27,7 @@ namespace AuctionSite.API.Mapper
                    entity.LotStatus.ToString()).Value);
 
             CreateMap<UpdateLotDto, SpecificLot>()
-           .ConstructUsing(entity => SpecificLot.Create(Lot.Create(entity.Name, entity.ShortDescription, entity.CategoryName, null, entity.Id).Value,
+           .ConstructUsing(entity => SpecificLot.Create(Lot.Create(entity.Name, entity.ShortDescription, entity.CategoryName, null, entity.Id, null).Value,
                                                       entity.FullDescription,
                                                       null,
                                                       null,
@@ -42,6 +42,7 @@ namespace AuctionSite.API.Mapper
                 .ForMember(dest => dest.ShortDescription, opt => opt.MapFrom(m => m.Lot.ShortDescription))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(m => m.Lot.CategoryName))
                 .ForMember(dest => dest.ImagePreview, opt => opt.MapFrom(m => m.Lot.ImagePreview!.Name))
+                .ForMember(dest => dest.WhoCreatedUserId, opt => opt.MapFrom(m => m.Lot.BuyerId))
                 .ForMember(dest => dest.FullImage, opt => opt.MapFrom(m => m.FullImage!.Name));
 
             CreateMap<Lot, LotEntity>()
@@ -56,7 +57,7 @@ namespace AuctionSite.API.Mapper
                                                    entity.ShortDescription,
                                                    entity.CategoryName,
                                                    !string.IsNullOrEmpty(entity.ImagePreview) ?
-                                                   Image.Create(entity.ImagePreview, 5000).Value : null, entity.Id).Value);
+                                                   Image.Create(entity.ImagePreview, 5000).Value : null, entity.Id,null).Value);
 
             CreateMap<SpecificLotEntity, SpecificLot>()
             .ConstructUsing(entity => SpecificLot.Create(null,
@@ -72,6 +73,9 @@ namespace AuctionSite.API.Mapper
             CreateMap<BuyerEntity, Buyer>()
                 .ConstructUsing(entity => MapUser(entity));
 
+            CreateMap<BetEntity, Bet>()
+               .ConstructUsing(entity => MapBet(entity));
+
             CreateMap<Buyer, BuyerEntity>()
              .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
              .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.User.Password))
@@ -80,6 +84,8 @@ namespace AuctionSite.API.Mapper
              .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.User.Role))
              .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
              .ForMember(dest => dest.SecondName, opt => opt.MapFrom(src => src.SecondName));
+
+
         }
         private Buyer MapUser(BuyerEntity buyerEntity)
         {
@@ -90,7 +96,7 @@ namespace AuctionSite.API.Mapper
             var buyer = Buyer.Create(buyerEntity.FirstName,buyerEntity.SecondName,user, buyerEntity.Id).Value;
             return buyer;
         }
-        private Bet? MapBet(BetEntity? betEntity)
+        private Bet MapBet(BetEntity betEntity)
         {
             if (betEntity == null)
                 return null;
@@ -101,7 +107,7 @@ namespace AuctionSite.API.Mapper
 
             string comments = betEntity.Comments?.Text;
 
-            var bet = Bet.Create(betEntity.Price, buyer.FirstName, buyer.SecondName, comments, betEntity.Id).Value;
+            var bet = Bet.Create(buyer.FirstName, buyer.SecondName, comments, betEntity.Price, betEntity.Id).Value;
 
             if (betEntity.Comments != null && betEntity.Comments.ReplyComments != null)
             {

@@ -7,5 +7,7 @@
         public string Password { get; set; } = string.Empty;
         public string PasswordSalt { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
+
+        public List<SpecificLotEntity>? LotEntities { get; set; }
     }
 }

@@ -18,11 +18,103 @@ namespace AuctionSite.DataAccess.Repositories
             _mapper = mapper;
         }
 
-        public Task<Result<string>> AddAsync(Bet entity)
+        public async Task<Result<string>> AddAsync(Bet entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var lot = await _dbContext.SpecificLot.FindAsync(entity.LotId);
+
+                if (lot == null)
+                    return Result.Failure<string>($"Lot by id: {entity.LotId} not found");
+
+                var bets = await _dbContext.Bets
+                                           .AsNoTracking()
+                                           .Where(w => w.LotId == entity.LotId && w.Price > entity.Price)
+                                           .ToListAsync();
+
+                if (bets.Count == 0)
+                {
+                    lot.MaxPrice = entity.Price;
+                    _dbContext.Entry(lot).Property(p => p.MaxPrice).IsModified = true;
+                }
+
+                var betEntity = new BetEntity 
+                {
+                    Price = entity.Price,
+                    BuyerId = entity.UserId,
+                    LotId = lot.Id,
+                    Comments = new CommentsEntity
+                    {
+                        Text = entity.Comments
+                    }
+                };
+
+                await _dbContext.Bets.AddAsync(betEntity);
+                await _dbContext.SaveChangesAsync();
+
+                return Result.Success<string>("Bet has been added");
+            }
+            catch (Exception ex)
+            { 
+                return Result.Failure<string>(ex.Message);
+            }
         }
 
+        public async Task<Result<List<Bet>>> GetAllBuyerBets(int buyerId, int start, int limit)
+        {
+            var bets = new List<Bet>();
+            try
+            {       
+                var betsEntity = await _dbContext.Bets
+                    .AsNoTracking()
+                    .Where(w => w.BuyerId == buyerId)
+                    .Include(i => i.Buyer)
+                    .Include(i => i.Comments)
+                        .ThenInclude(ti => ti!.ReplyComments)
+                    .Skip((start - 1) * limit)
+                    .Take(limit)
+                    .ToListAsync();
+
+                foreach (var betEntity in betsEntity)
+                {
+                    var bet = MapBet(betEntity);
+                    bets.Add(bet);
+                }
+
+                return Result.Success(bets);
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<List<Bet>>(ex.Message);
+            }
+        }
+        public async Task<Result<Bet>> GetMaxBet(int lotId)
+        {
+            try
+            {
+                var lot = await _dbContext.SpecificLot.FindAsync(lotId);
+
+                if (lot == null)
+                    return Result.Failure<Bet>($"Lot by id: {lotId} not found");
+
+
+                var betEntity = await _dbContext.Bets
+                    .AsNoTracking()
+                    .Where(w => w.LotId == lotId && w.Price == lot.MaxPrice)
+                    .Include(i => i.Buyer)
+                     .Include(i => i.Comments)
+                      .ThenInclude(ti => ti!.ReplyComments)
+                    .FirstOrDefaultAsync();
+
+                var bet = _mapper.Map<Bet>(betEntity);
+
+                return Result.Success(bet);
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<Bet>(ex.Message);
+            }
+        }
         public async Task<Result<List<Bet>>> ReadLimitAsync(int start, int limit, int specificLotId)
         {
             var bets = new List<Bet>();
@@ -69,7 +161,7 @@ namespace AuctionSite.DataAccess.Repositories
 
             string comments = betEntity.Comments?.Text;
 
-            var bet = Bet.Create(betEntity.Price, buyer.FirstName, buyer.SecondName, comments, betEntity.Id).Value;
+            var bet = Bet.Create(buyer.FirstName, buyer.SecondName, comments, betEntity.Price, betEntity.Id).Value;
 
             if (betEntity.Comments != null && betEntity.Comments.ReplyComments != null)
             {

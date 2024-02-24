@@ -30,6 +30,8 @@ namespace AuctionSite.Application
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, userForLogin.Value.User.Email),
+                new Claim(ClaimTypes.Name, userForLogin.Value.FirstName),
+                new Claim(ClaimTypes.Surname, userForLogin.Value.SecondName),
                 new Claim(ClaimTypes.Role, userForLogin.Value.User.Role),
                 new Claim(ClaimTypes.NameIdentifier, userForLogin.Value.Id.ToString())
             };

@@ -16,56 +16,42 @@ namespace AuctionSite.Application.Services
         public async Task<Result<string>> AddLotAsync(SpecificLot lot)
         {
             var result = await _lotRepository.AddAsync(lot);
-
-            if (result.IsFailure)
-                return result;
-
-            return Result.Success<string>(result.Value);
+            return result;
         }
         public async Task<Result<List<Lot>>> GetLotsAsync(int page = 1, int pageSize = 10)
         {
             var result = await _lotRepository.ReadLimitAsync(page, pageSize);
-
-            if (result.IsFailure)
-                return result;
-
-            return Result.Success<List<Lot>>(result.Value);
+            return result;
         }
         public async Task<Result<string>> UpdateLotAsync(Lot lot)
         {
             var result = await _lotRepository.UpdateAsync(lot);
-
-            if (result.IsFailure)
-                return result;
-
-            return Result.Success(result.Value);
+            return result;
         }
         public async Task<Result<string>> UpdateSpecificLotAsync(SpecificLot lot)
         {
             var result = await _lotRepository.UpdateSpecificLotAsync(lot);
 
-            if (result.IsFailure)
-                return result;
-
-            return Result.Success(result.Value);
+            return result;
         }
         public async Task<Result<string>> RemoveLotAsync(int lotId)
         {
             var result = await _lotRepository.DeleteAsync(lotId);
 
-            if (result.IsFailure)
-                return result;
-
-            return Result.Success(result.Value);
+            return result;
         }
         public async Task<Result<SpecificLot>> GetSpecificLotAsync(int id)
         {
             var result = await _lotRepository.GetSpecificLotAsync(id);
 
-            if (result.IsFailure)
-                return result;
+            return result;
+        }
 
-            return Result.Success(result.Value);
+        public async Task<Result<List<Lot>>> GetUserLotsAsync(int buyerId,int start, int limit)
+        {
+            var result = await _lotRepository.GetAllUserLots(buyerId, start, limit);
+
+            return result;
         }
     }
 }

@@ -9,6 +9,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Security.Claims;
 
 namespace AuctionSite.API.Controllers
 {
@@ -19,16 +20,13 @@ namespace AuctionSite.API.Controllers
     {
         private readonly LotService _lotService;
         private readonly IImageService _imageService;
-        private readonly IErrorValidationHandler<List<ErrorModel>, ModelStateDictionary> _errorHandler;
         private readonly IMapper _mapper;
 
-        public LotController(LotService lotService,
-                             IErrorValidationHandler<List<ErrorModel>, ModelStateDictionary> errorHandler,
+        public LotController(LotService lotService,            
                              IImageService imageService,
                              IMapper mapper)
         {
             _lotService = lotService;
-            _errorHandler = errorHandler;
             _imageService = imageService;
             _mapper = mapper;
         }
@@ -67,6 +65,7 @@ namespace AuctionSite.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Buyer")]
         public async Task<ActionResult> AddLots([FromForm] CreateLotDto createLotDto)
         {
             var imagePreviewResult = await _imageService.CreateImageAsync(createLotDto.ImagePreview!, ImageType.PreviewImage);
@@ -102,6 +101,20 @@ namespace AuctionSite.API.Controllers
         public async Task<ActionResult> GetByIdLots([FromQuery] int id)
         {
             var result = await _lotService.GetSpecificLotAsync(id);
+
+            if (result.IsFailure)
+                return CreateJsonResult("500", result.Error);
+
+            return CreateJsonResult("200", result.Value);
+        }
+
+        [HttpGet("/all/buyer")]
+        [Authorize(Roles = "Admin,Buyer")]
+        public async Task<ActionResult> GetUserLots([FromQuery]int page = 1, [FromQuery] int limit = 10)
+        {
+            var buyerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            var result = await _lotService.GetUserLotsAsync(buyerId, page, limit);
 
             if (result.IsFailure)
                 return CreateJsonResult("500", result.Error);

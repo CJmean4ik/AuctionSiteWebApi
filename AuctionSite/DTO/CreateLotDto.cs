@@ -17,7 +17,8 @@ namespace AuctionSite.API.DTO
 
         public string? ImagePreviewName { get; set; }
         public string? FullImageName { get; set; }
-             
+
+        public int? BuyerId { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

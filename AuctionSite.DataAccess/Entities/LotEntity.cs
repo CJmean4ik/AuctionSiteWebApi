@@ -14,5 +14,10 @@ namespace AuctionSite.DataAccess.Entities
         [IgnoreDuringSelectionAttribute]
         public string ImagePreview { get; set; } = string.Empty;
 
+        [IgnoreDuringSelectionAttribute]
+        public int? WhoCreatedUserId { get; set; }
+
+        [IgnoreDuringSelectionAttribute]
+        public BuyerEntity? Entity { get; set; }
     }
 }

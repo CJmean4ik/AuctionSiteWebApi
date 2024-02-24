@@ -11,6 +11,7 @@ namespace AuctionSite.Core.Contracts.Repositories.Specific
     {
         Task<Result<SpecificLot>> GetSpecificLotAsync(int id);
         Task<Result<string>> UpdateSpecificLotAsync(SpecificLot specificLot);
+        Task<Result<List<Lot>>> GetAllUserLots(int buyerId, int start, int limit);
         Task SaveChangeAsync();
     }
 }

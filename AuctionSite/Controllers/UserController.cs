@@ -32,6 +32,7 @@ namespace AuctionSite.API.Controllers
             var user = AuctionSite.Core.Models.User.Create(userAuthorize.Email, "Buyer").Value!;
             var buyer = Buyer.Create(userAuthorize.FirstName, userAuthorize.SecondName, user).Value!;
             buyer.User.SetPassword(userAuthorize.Password);
+
             var result = await _usersService.RegisterUser(buyer);
 
             if (result.IsFailure) 

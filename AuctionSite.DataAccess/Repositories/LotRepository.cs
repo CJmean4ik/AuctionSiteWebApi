@@ -118,7 +118,7 @@ namespace AuctionSite.DataAccess.Repositories
             try
             {
                 var lotConcreteEntity = await _dbContext.SpecificLot
-                                                    .Include(s => s.Bets.Take(5))!
+                                                    .Include(s => s.Bets.OrderByDescending(b => b.Price).Take(5))!
                                                           .ThenInclude(b => b.Buyer)
                                                          .Include(s => s.Bets)!
                                                           .ThenInclude(b => b.Comments)
@@ -161,6 +161,30 @@ namespace AuctionSite.DataAccess.Repositories
             catch (Exception ex)
             {
                 return Result.Failure<string>(ex.Message);
+            }
+        }
+
+        public async Task<Result<List<Lot>>> GetAllUserLots(int buyerId, int start, int limit)
+        {
+            if (start == 0 || limit == 0)
+                return Result.Failure<List<Lot>>("Start page or limit there be shold be more 0");
+
+            try
+            {
+                var lotsEntity = await _dbContext.Lots
+                    .AsNoTracking()
+                    .Where(w => w.WhoCreatedUserId == buyerId)
+                    .Skip((start - 1) * limit)
+                    .Take(limit)
+                    .ToListAsync();
+
+                var lots = _mapper.Map<List<LotEntity>, List<Lot>>(lotsEntity);
+
+                return Result.Success(lots);
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<List<Lot>>(ex.Message);
             }
         }
     }

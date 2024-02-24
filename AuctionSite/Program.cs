@@ -1,5 +1,3 @@
-using AuctionSite.API.Contracts;
-using AuctionSite.API.Services.ErrorValidation;
 using AuctionSite.Application;
 using AuctionSite.Application.Services;
 using AuctionSite.Application.Services.Image;
@@ -10,7 +8,6 @@ using AuctionSite.DataAccess.Components.UpdateComponents;
 using AuctionSite.DataAccess.Repositories;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuctionSite
@@ -36,7 +33,6 @@ namespace AuctionSite
 
             builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlob")));
 
-            builder.Services.AddScoped<IErrorValidationHandler<List<ErrorModel>, ModelStateDictionary>, ErrorValidationHandler>();
             builder.Services.AddScoped<IModifierArgumentChanger<AuctionDbContext>>(opt => new ModifierArgumentChangerDecorator<AuctionDbContext>(new ModifierArgumentChanger<AuctionDbContext>()));
             builder.Services.AddScoped<ILotRepository, LotRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();

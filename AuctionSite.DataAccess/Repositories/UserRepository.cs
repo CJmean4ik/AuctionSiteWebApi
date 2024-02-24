@@ -41,7 +41,6 @@ namespace AuctionSite.DataAccess.Repositories
                 return Result.Failure<string>(ex.Message);
             }
         }
-
         public async Task<Result<Buyer>> GetByEmail(string email)
         {
             try
