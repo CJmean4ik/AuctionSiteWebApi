@@ -1,7 +1,6 @@
 ﻿using AuctionSite.Core.Contracts.Repositories.Specific;
 using AuctionSite.Core.Models;
 using CSharpFunctionalExtensions;
-using Microsoft.AspNetCore.Http;
 
 namespace AuctionSite.Application.Services
 {

@@ -11,7 +11,6 @@ namespace AuctionSite.Core.Models
         public DateTime? StartDate { get; }
         public DateTime? EndDate { get; }
         public int? DurationSale { get; }
-        public Image? FullImage { get; }
         public decimal? MaxPrice { get; }
         public string? LotStatus { get; }
 
@@ -24,7 +23,6 @@ namespace AuctionSite.Core.Models
                            DateTime? startDate,
                            DateTime? endDate,
                            int? durationSale,
-                           Image? fullImage,
                            decimal? maxPrice,
                            string? lotStatus)
         {
@@ -33,7 +31,6 @@ namespace AuctionSite.Core.Models
             StartDate = startDate;
             EndDate = endDate;
             DurationSale = durationSale;
-            FullImage = fullImage;
             MaxPrice = maxPrice;
             LotStatus = lotStatus;
         }
@@ -43,7 +40,6 @@ namespace AuctionSite.Core.Models
                                                  DateTime? startDate,
                                                  DateTime? endDate,
                                                  int? durationSale,
-                                                 Image? fullImage,
                                                  decimal? maxPrice,
                                                  string? lotStatus) =>
             Result.Success(new SpecificLot(lot,
@@ -51,7 +47,6 @@ namespace AuctionSite.Core.Models
                                               startDate,
                                               endDate,
                                               durationSale,
-                                              fullImage,
                                               maxPrice,
                                               lotStatus));
 

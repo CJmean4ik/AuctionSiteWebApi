@@ -59,7 +59,6 @@ namespace AuctionSite.DataAccess.Repositories
                 return Result.Failure<string>(ex.Message);
             }
         }
-
         public async Task<Result<List<Bet>>> GetAllBuyerBets(int buyerId, int start, int limit)
         {
             var bets = new List<Bet>();

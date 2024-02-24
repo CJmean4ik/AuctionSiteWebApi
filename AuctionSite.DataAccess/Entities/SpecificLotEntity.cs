@@ -18,9 +18,6 @@ namespace AuctionSite.DataAccess.Entities
         public DateTime? EndDate { get; set; }
 
         public int? DurationSale { get; set; }
-
-        [IgnoreDuringSelectionAttribute]
-        public string? FullImage { get; set; } = string.Empty;
         public LotStatus? LotStatus { get; set; }
 
         [IgnoreDuringSelectionAttribute]

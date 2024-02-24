@@ -1,7 +1,4 @@
-﻿using AuctionSite.API.Contracts;
-using AuctionSite.API.DTO;
-using AuctionSite.API.Services.ErrorValidation;
-using AuctionSite.Application.Model;
+﻿using AuctionSite.API.DTO;
 using AuctionSite.Application.Services;
 using AuctionSite.Application.Services.Image;
 using AuctionSite.Core.Models;
@@ -15,7 +12,6 @@ namespace AuctionSite.API.Controllers
 {
     [ApiController]
     [Route("api/v1/lots")]
-    [Authorize(Roles = "Admin")]
     public class LotController : Controller
     {
         private readonly LotService _lotService;
@@ -41,6 +37,7 @@ namespace AuctionSite.API.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> UpdateLots([FromForm] UpdateLotDto updateLotDto)
         {
             var specifiLot = _mapper.Map<SpecificLot>(updateLotDto);
@@ -54,6 +51,7 @@ namespace AuctionSite.API.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> RemoveLots([FromQuery] int id)
         {
             var result = await _lotService.RemoveLotAsync(id);
@@ -65,21 +63,18 @@ namespace AuctionSite.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Buyer")]
+        [Authorize(Roles = "Buyer")]
         public async Task<ActionResult> AddLots([FromForm] CreateLotDto createLotDto)
         {
-            var imagePreviewResult = await _imageService.CreateImageAsync(createLotDto.ImagePreview!, ImageType.PreviewImage);
+            var imagePreviewResult = await _imageService.CreateImageAsync(createLotDto.ImagePreview!);
 
             if (imagePreviewResult.IsFailure)
                 return CreateJsonResult("500", imagePreviewResult.Error);
 
-            var imageFullResult = await _imageService.CreateImageAsync(createLotDto.FullImage!, ImageType.FullImage);
+            var buyerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            if (imageFullResult.IsFailure)
-                return CreateJsonResult("500", imageFullResult.Error);
-
-            createLotDto.FullImageName = imageFullResult.Value;
             createLotDto.ImagePreviewName = imagePreviewResult.Value;
+            createLotDto.BuyerId = buyerId;
 
             var lot = _mapper.Map<CreateLotDto, SpecificLot>(createLotDto);
             
@@ -92,7 +87,6 @@ namespace AuctionSite.API.Controllers
             {
                 LotResult = result.Value,
                 PreviewImageResult = imagePreviewResult.Value,
-                FullImageResult = imageFullResult.Value
             });
         }
 
@@ -108,8 +102,8 @@ namespace AuctionSite.API.Controllers
             return CreateJsonResult("200", result.Value);
         }
 
-        [HttpGet("/all/buyer")]
-        [Authorize(Roles = "Admin,Buyer")]
+        [HttpGet("all/buyer")]
+        [Authorize(Roles = "Buyer")]
         public async Task<ActionResult> GetUserLots([FromQuery]int page = 1, [FromQuery] int limit = 10)
         {
             var buyerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);

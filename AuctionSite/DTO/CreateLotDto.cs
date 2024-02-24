@@ -12,11 +12,9 @@ namespace AuctionSite.API.DTO
         public string? FullDescription { get; set; } = string.Empty;
         public DateTime StartDate { get; set; } = DateTime.Now;
         public IFormFile? ImagePreview { get; set; }
-        public IFormFile? FullImage { get; set; }
         public LotStatus LotStatus { get; set; } = LotStatus.Active;
 
         public string? ImagePreviewName { get; set; }
-        public string? FullImageName { get; set; }
 
         public int? BuyerId { get; set; }
 
@@ -45,9 +43,6 @@ namespace AuctionSite.API.DTO
 
             if (string.IsNullOrWhiteSpace(FullDescription))
                 validations.Add(new ValidationResult("Введіть повний опис"));
-
-            if (FullImage == null)
-                validations.Add(new ValidationResult("Лот повинен мати повну картинку"));
 
             return validations;
         }

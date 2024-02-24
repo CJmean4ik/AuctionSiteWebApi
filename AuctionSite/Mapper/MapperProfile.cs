@@ -22,7 +22,6 @@ namespace AuctionSite.API.Mapper
                     entity.StartDate,
                     DateTime.Now.AddDays((double)entity.DurationSale!),
                     entity.DurationSale,
-                   Image.Create(entity.FullImageName, 0).Value,
                    0,
                    entity.LotStatus.ToString()).Value);
 
@@ -32,7 +31,6 @@ namespace AuctionSite.API.Mapper
                                                       null,
                                                       null,
                                                       entity.DurationSale,
-                                                      null,
                                                       0,
                                                       entity.LotStatus == null ? "" : entity.LotStatus.ToString()).Value);
 
@@ -42,8 +40,7 @@ namespace AuctionSite.API.Mapper
                 .ForMember(dest => dest.ShortDescription, opt => opt.MapFrom(m => m.Lot.ShortDescription))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(m => m.Lot.CategoryName))
                 .ForMember(dest => dest.ImagePreview, opt => opt.MapFrom(m => m.Lot.ImagePreview!.Name))
-                .ForMember(dest => dest.WhoCreatedUserId, opt => opt.MapFrom(m => m.Lot.BuyerId))
-                .ForMember(dest => dest.FullImage, opt => opt.MapFrom(m => m.FullImage!.Name));
+                .ForMember(dest => dest.WhoCreatedUserId, opt => opt.MapFrom(m => m.Lot.BuyerId));
 
             CreateMap<Lot, LotEntity>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(map => map.Id))
@@ -60,12 +57,11 @@ namespace AuctionSite.API.Mapper
                                                    Image.Create(entity.ImagePreview, 5000).Value : null, entity.Id,null).Value);
 
             CreateMap<SpecificLotEntity, SpecificLot>()
-            .ConstructUsing(entity => SpecificLot.Create(null,
+            .ConstructUsing(entity => SpecificLot.Create(Lot.Create(entity.Name, entity.ShortDescription, entity.CategoryName, Image.Create(entity.ImagePreview, 5000).Value, entity.Id, entity.WhoCreatedUserId).Value,
                                               entity.FullDescription,
                                               entity.StartDate,
                                               entity.EndDate,
                                               entity.DurationSale,
-                                              string.IsNullOrEmpty(entity.FullImage) ? null : Image.Create(entity.FullImage, 5000).Value,
                                              entity.MaxPrice,
                                              entity.LotStatus.ToString()).Value)
             .ForMember(dest => dest.Bets, opt => opt.MapFrom(src => src.Bets!.Select(s => MapBet(s))));

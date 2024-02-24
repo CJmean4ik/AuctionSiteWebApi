@@ -163,7 +163,6 @@ namespace AuctionSite.DataAccess.Repositories
                 return Result.Failure<string>(ex.Message);
             }
         }
-
         public async Task<Result<List<Lot>>> GetAllUserLots(int buyerId, int start, int limit)
         {
             if (start == 0 || limit == 0)

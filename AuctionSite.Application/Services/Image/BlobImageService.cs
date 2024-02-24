@@ -1,5 +1,4 @@
-﻿using AuctionSite.Application.Model;
-using Azure.Storage.Blobs;
+﻿using Azure.Storage.Blobs;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Http;
 
@@ -14,11 +13,11 @@ namespace AuctionSite.Application.Services.Image
             _serviceClient = serviceClient;
         }
 
-        public async Task<Result<Stream>> ReadImageAsync(string fileName, ImageType imageType)
+        public async Task<Result<Stream>> ReadImageAsync(string fileName)
         {
             try
             {
-                var blobClient = GetBlobClient(imageType, fileName);
+                var blobClient = GetBlobClient("previewimage", fileName);
 
                 if (!await blobClient.ExistsAsync())
                     return Result.Failure<Stream>($"Image blob by name: {fileName} not found!");
@@ -32,11 +31,11 @@ namespace AuctionSite.Application.Services.Image
                 return Result.Failure<Stream>(ex.Message);
             }
         }
-        public async Task<Result<string>> CreateImageAsync(IFormFile formFile, ImageType imageType)
+        public async Task<Result<string>> CreateImageAsync(IFormFile formFile)
         {
             try
             {
-                var blobClient = await GetBlobClient(imageType, formFile,true);
+                var blobClient = await GetBlobClient("previewimage", formFile,true);
 
                 Stream stream = new MemoryStream();
                 await formFile.CopyToAsync(stream);
@@ -51,9 +50,9 @@ namespace AuctionSite.Application.Services.Image
                 return Result.Failure<string>(ex.Message);
             }
         }
-        public async Task<Result<string>> UpdateAsync(IFormFile newImage, string oldImage, ImageType imageType)
+        public async Task<Result<string>> UpdateAsync(IFormFile newImage, string oldImage)
         {
-            var blobClient =  GetBlobClient(imageType, oldImage);
+            var blobClient =  GetBlobClient("previewimage", oldImage);
 
             try
             {
@@ -72,11 +71,11 @@ namespace AuctionSite.Application.Services.Image
                 return Result.Failure<string>($"Failed to update blob file in Azure: {ex.Message}");
             }
         }
-        public async Task<Result<string>> DeleteAsync(string oldImage, ImageType imageType)
+        public async Task<Result<string>> DeleteAsync(string oldImage)
         {
             try
             {
-                var blobClient = GetBlobClient(imageType, oldImage);
+                var blobClient = GetBlobClient("previewimage", oldImage);
 
                 if (!await blobClient.DeleteIfExistsAsync())
                     return Result.Failure<string>($"Blob file by name: {oldImage} doesnt exist!");
@@ -88,35 +87,26 @@ namespace AuctionSite.Application.Services.Image
                 return Result.Failure<string>($"Failed to delete blob file in Azure: {ex.Message}");
             }
         }
-        private async Task<BlobClient> GetBlobClient(ImageType imageType,IFormFile? formFile, bool isCreate = false)
+        private async Task<BlobClient> GetBlobClient(string containerName,IFormFile? formFile, bool isCreate = false)
         {
-            var blobClient = GetBlobClient(imageType, formFile.FileName);
+            var blobClient = GetBlobClient(containerName, formFile.FileName);
 
             if (isCreate && await blobClient.ExistsAsync())
             {
                 int index = new Random().Next(1, 10000);
                 string[] splitFileName = formFile.FileName.Split(".");
                 string newName = $"{splitFileName[0]}{index}.{splitFileName[1]}";
-                blobClient = GetBlobClient(imageType, newName);
+                blobClient = GetBlobClient(containerName, newName);
                 return blobClient;
             }
 
             return blobClient;
         }
-
-        private BlobClient GetBlobClient(ImageType imageType, string? formFile)
+        private BlobClient GetBlobClient(string containerName, string? formFile)
         {
-            string containerName = CombinePathByImageType(imageType);
             var clientContainer = _serviceClient.GetBlobContainerClient(containerName);
             var blobClient = clientContainer.GetBlobClient(formFile);
             return blobClient;
         }
-        private string CombinePathByImageType(ImageType imageType) => imageType switch
-        {
-            ImageType.PreviewImage => "previewimage",
-            ImageType.FullImage => "fullimage",
-            _ => "",
-        };
-
     }
 }

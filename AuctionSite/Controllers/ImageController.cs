@@ -1,5 +1,4 @@
 ﻿using AuctionSite.API.DTO;
-using AuctionSite.Application.Model;
 using AuctionSite.Application.Services.Image;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +17,11 @@ namespace AuctionSite.API.Controllers
             _imageService = imageService;
         }
 
-        [HttpGet("{imageType}")]
+        [HttpGet()]
         [AllowAnonymous]
-        public async Task<IActionResult> GetImage([FromQuery] string fileName, ImageType imageType)
+        public async Task<IActionResult> GetImage([FromQuery] string fileName)
         {
-            var result = await _imageService.ReadImageAsync(fileName, imageType);
+            var result = await _imageService.ReadImageAsync(fileName);
 
             if (result.IsFailure)
                 return Json(new { Status = "500", Error = result.Error });
@@ -30,10 +29,10 @@ namespace AuctionSite.API.Controllers
             return File(result.Value, "image/jpg");
         }
 
-        [HttpPut("{imageType}")]
-        public async Task<IActionResult> UpdateImage([FromForm] UpdateImageDto imageDto, ImageType imageType)
+        [HttpPut]
+        public async Task<IActionResult> UpdateImage([FromForm] UpdateImageDto imageDto)
         {
-            var result = await _imageService.UpdateAsync(imageDto.NewImage, imageDto.OldImageName, imageType);
+            var result = await _imageService.UpdateAsync(imageDto.NewImage, imageDto.OldImageName);
 
             if (result.IsFailure)
                 return Json(new { Status = "500", Error = result.Error });
@@ -41,10 +40,10 @@ namespace AuctionSite.API.Controllers
             return Json(new { Status = "200", Message = result.Value });
         }
 
-        [HttpDelete("{imageType}")]
-        public async Task<IActionResult> Removemage([FromQuery] string fileName,ImageType imageType)
+        [HttpDelete]
+        public async Task<IActionResult> Removemage([FromQuery] string fileName )
         {
-            var result = await _imageService.DeleteAsync(fileName, imageType);
+            var result = await _imageService.DeleteAsync(fileName);
 
             if (result.IsFailure)
                 return Json(new { Status = "500", Error = result.Error });
@@ -52,10 +51,10 @@ namespace AuctionSite.API.Controllers
             return Json(new { Status = "200", Message = result.Value });
         }
 
-        [HttpPost("{imageType}")]
-        public async Task<IActionResult> CreateImage([FromForm] IFormFile file, ImageType imageType)
+        [HttpPost]
+        public async Task<IActionResult> CreateImage([FromForm] IFormFile file)
         {
-            var result = await _imageService.CreateImageAsync(file, imageType);
+            var result = await _imageService.CreateImageAsync(file);
 
             if (result.IsFailure)
                 return Json(new { Status = "500", Error = result.Error });

@@ -1,16 +1,15 @@
-﻿using AuctionSite.Application.Model;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Http;
 
 namespace AuctionSite.Application.Services.Image
 {
     public class LocalImageService : IImageService
     {
-        public async Task<Result<string>> CreateImageAsync(IFormFile formFile, ImageType imageType)
+        public async Task<Result<string>> CreateImageAsync(IFormFile formFile)
         {
             try
             {
-                var directory = CombinePathByImageType(imageType);
+                var directory = "C:\\ImageCatalog\\PreviewImage\\";
                 var name = formFile.FileName;
                 var fullPath = directory + name;
                 
@@ -35,9 +34,9 @@ namespace AuctionSite.Application.Services.Image
                 return Result.Failure<string>(ex.Message);
             }
         }
-        public async Task<Result<string>> DeleteAsync(string oldImage, ImageType imageType)
+        public async Task<Result<string>> DeleteAsync(string oldImage)
         {
-            string directory = CombinePathByImageType(imageType);
+            var directory = "C:\\ImageCatalog\\PreviewImage\\";
             string imagePathOld = Path.Combine(directory, oldImage);
 
             if (!File.Exists(imagePathOld))
@@ -47,10 +46,10 @@ namespace AuctionSite.Application.Services.Image
 
             return Result.Success($"Image {imagePathOld} has been deleted!");
         }
-        public async Task<Result<Stream>> ReadImageAsync(string fileName, ImageType imageType)
+        public async Task<Result<Stream>> ReadImageAsync(string fileName)
         {
-            string currentPath = CombinePathByImageType(imageType);
-            string imagePath = Path.Combine(currentPath, fileName);
+            var directory = "C:\\ImageCatalog\\PreviewImage\\";
+            string imagePath = Path.Combine(directory, fileName);
 
             if (!File.Exists(imagePath))
                 return Result.Failure<Stream>($"Image by path: {imagePath} not found!");
@@ -65,9 +64,9 @@ namespace AuctionSite.Application.Services.Image
                 return Result.Failure<Stream>($"Failed to open image file: {ex.Message}");
             }
         }
-        public async Task<Result<string>> UpdateAsync(IFormFile newImage, string oldImage, ImageType imageType)
+        public async Task<Result<string>> UpdateAsync(IFormFile newImage, string oldImage)
         {
-            string directory = CombinePathByImageType(imageType);
+            var directory = "C:\\ImageCatalog\\PreviewImage\\";
             string imagePathOld = Path.Combine(directory, oldImage);
 
             if (!File.Exists(imagePathOld))
@@ -87,12 +86,5 @@ namespace AuctionSite.Application.Services.Image
                 return Result.Failure<string>($"Failed to delete and update image file: {ex.Message}");
             }
         }
-
-        private string CombinePathByImageType(ImageType imageType) => imageType switch
-        {
-            ImageType.PreviewImage => "C:\\ImageCatalog\\PreviewImage\\",
-            ImageType.FullImage => "C:\\ImageCatalog\\FullImage\\",
-            _ => "",
-        };
     }
 }
