@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Azure.Storage.Blobs;
+using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Http;
 
 namespace AuctionSite.Application.Services.Image
@@ -16,12 +17,12 @@ namespace AuctionSite.Application.Services.Image
                 if (!Directory.Exists(directory))
                     Directory.CreateDirectory(directory);
 
-                if (!File.Exists(fullPath))
+                if (File.Exists(fullPath))
                 {
-                    int index = new Random(formFile.FileName.GetHashCode()).Next(1, 10000);
-                    string imagecontentType = formFile.FileName.Split(".").Last();
-                    name = formFile.Name + index + "." + imagecontentType;
-                    fullPath = directory + name;
+                    int index = new Random().Next(1, 10000);
+                    string[] splitFileName = formFile.FileName.Split(".");
+                    string newName = $"{splitFileName[0]}{index}.{splitFileName[1]}"; 
+                    fullPath = directory + newName;
                 }
                 
                 using (FileStream file = new FileStream(path: fullPath, FileMode.CreateNew))

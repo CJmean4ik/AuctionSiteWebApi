@@ -4,6 +4,7 @@ using AuctionSite.DataAccess.Entities;
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace AuctionSite.DataAccess.Repositories
 {
@@ -43,10 +44,7 @@ namespace AuctionSite.DataAccess.Repositories
                     Price = entity.Price,
                     BuyerId = entity.UserId,
                     LotId = lot.Id,
-                    Comments = new CommentsEntity
-                    {
-                        Text = entity.Comments
-                    }
+                    Comments = entity.Comments
                 };
 
                 await _dbContext.Bets.AddAsync(betEntity);
@@ -68,8 +66,7 @@ namespace AuctionSite.DataAccess.Repositories
                     .AsNoTracking()
                     .Where(w => w.BuyerId == buyerId)
                     .Include(i => i.Buyer)
-                    .Include(i => i.Comments)
-                        .ThenInclude(ti => ti!.ReplyComments)
+                    .Include(i => i.ReplyComments)
                     .Skip((start - 1) * limit)
                     .Take(limit)
                     .ToListAsync();
@@ -101,8 +98,7 @@ namespace AuctionSite.DataAccess.Repositories
                     .AsNoTracking()
                     .Where(w => w.LotId == lotId && w.Price == lot.MaxPrice)
                     .Include(i => i.Buyer)
-                     .Include(i => i.Comments)
-                      .ThenInclude(ti => ti!.ReplyComments)
+                     .Include(i => i.ReplyComments)
                     .FirstOrDefaultAsync();
 
                 var bet = _mapper.Map<Bet>(betEntity);
@@ -130,8 +126,7 @@ namespace AuctionSite.DataAccess.Repositories
                     .AsNoTracking()
                     .Where(w => w.LotId == specificLotId)
                     .Include(i => i.Buyer)
-                    .Include(i => i.Comments)
-                        .ThenInclude(ti => ti!.ReplyComments)
+                    .Include(i => i.ReplyComments)
                     .Skip((start - 1) * limit)
                     .Take(limit)
                     .ToListAsync();
@@ -158,13 +153,13 @@ namespace AuctionSite.DataAccess.Repositories
             if (buyer == null)
                 return null;
 
-            string comments = betEntity.Comments?.Text;
+            string comments = betEntity.Comments;
 
             var bet = Bet.Create(buyer.FirstName, buyer.SecondName, comments, betEntity.Price, betEntity.Id).Value;
 
-            if (betEntity.Comments != null && betEntity.Comments.ReplyComments != null)
+            if (betEntity.Comments != null && betEntity.ReplyComments != null)
             {
-                var replyComments = betEntity.Comments.ReplyComments.Select(c =>
+                var replyComments = betEntity.ReplyComments.Select(c =>
                     ReplyComments.Create(c.Text, c.UserName).Value).ToList();
                 bet.AddReplyComments(replyComments);
             }

@@ -5,7 +5,6 @@ using AuctionSite.Core.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Security.Claims;
 
 namespace AuctionSite.API.Controllers
@@ -72,9 +71,13 @@ namespace AuctionSite.API.Controllers
                 return CreateJsonResult("500", imagePreviewResult.Error);
 
             var buyerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var buyerName = User.FindFirstValue(ClaimTypes.Name);
+            var buyerLastName = User.FindFirstValue(ClaimTypes.Surname);
 
             createLotDto.ImagePreviewName = imagePreviewResult.Value;
             createLotDto.BuyerId = buyerId;
+            createLotDto.BuyerLastName = buyerLastName;
+            createLotDto.BuyerFirstName = buyerName;
 
             var lot = _mapper.Map<CreateLotDto, SpecificLot>(createLotDto);
             
@@ -115,7 +118,6 @@ namespace AuctionSite.API.Controllers
 
             return CreateJsonResult("200", result.Value);
         }
-
         private ActionResult CreateJsonResult(string statusName, object obj) =>
         Json(new
         {

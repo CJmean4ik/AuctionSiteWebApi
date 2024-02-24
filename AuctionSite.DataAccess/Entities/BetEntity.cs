@@ -11,7 +11,7 @@
         public int LotId { get; set; }
         public SpecificLotEntity? Lot { get; set; }
 
-        public int CommentsId { get; set; }
-        public CommentsEntity? Comments { get; set; }
+        public string? Comments { get; set; }
+        public List<ReplyCommentsEntity>? ReplyComments { get; set; }
     }
 }

@@ -7,7 +7,5 @@ namespace AuctionSite.DataAccess.Entities
     {
         public string FirstName { get; set; } = string.Empty;
         public string SecondName { get; set; } = string.Empty;
-
-        public List<BetEntity>? Bets { get; set; }
     }
 }

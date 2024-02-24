@@ -1,5 +1,4 @@
-﻿
-namespace AuctionSite.DataAccess.Entities
+﻿namespace AuctionSite.DataAccess.Entities
 {
     public class ReplyCommentsEntity
     {
@@ -7,7 +6,7 @@ namespace AuctionSite.DataAccess.Entities
         public string Text { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
 
-        public int CommentsId { get; set; }
-        public CommentsEntity? Comments { get; set; }
+        public int BetId { get; set; }
+        public BetEntity Bet { get; set; }
     }
 }

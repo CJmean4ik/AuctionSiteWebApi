@@ -119,12 +119,15 @@ namespace AuctionSite.DataAccess.Repositories
             {
                 var lotConcreteEntity = await _dbContext.SpecificLot
                                                     .Include(s => s.Bets.OrderByDescending(b => b.Price).Take(5))!
-                                                          .ThenInclude(b => b.Buyer)
-                                                         .Include(s => s.Bets)!
-                                                          .ThenInclude(b => b.Comments)
-                                                           .ThenInclude(c => c.ReplyComments)
+                                                    .ThenInclude(s => s.Buyer)                      
+                                                    .Include(s => s.Bets)!
+                                                    .ThenInclude(b => b.ReplyComments)
                                                     .Where(s => s.Id == id)
                                                     .FirstOrDefaultAsync();
+
+                var buyer = await _dbContext.Buyers.Where(w => w.Id == lotConcreteEntity.WhoCreatedId).FirstOrDefaultAsync();
+
+                lotConcreteEntity.Buyer = buyer;
 
                 if (lotConcreteEntity is null)
                     return Result.Failure<SpecificLot>($"Concrete lot by id: {id} not found!");
@@ -172,7 +175,7 @@ namespace AuctionSite.DataAccess.Repositories
             {
                 var lotsEntity = await _dbContext.Lots
                     .AsNoTracking()
-                    .Where(w => w.WhoCreatedUserId == buyerId)
+                    .Where(w => w.WhoCreatedId == buyerId)
                     .Skip((start - 1) * limit)
                     .Take(limit)
                     .ToListAsync();

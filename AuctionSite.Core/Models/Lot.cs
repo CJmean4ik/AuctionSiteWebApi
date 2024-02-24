@@ -9,21 +9,21 @@ namespace AuctionSite.Core.Models
         public string? ShortDescription { get; } = string.Empty;
         public string? CategoryName { get; } = string.Empty;
         public Image? ImagePreview { get; }
-        public int? BuyerId { get; }
+        public Buyer? WhoCreate { get; }
 
-        private Lot(int? lotId, string? name, string? shortDescription, string? categoryName, Image? imagePreview,int? buyerid)
+        private Lot(int? lotId, string? name, string? shortDescription, string? categoryName, Image? imagePreview,Buyer? bueyr)
         {
             Id = lotId;
             Name = name;
             ShortDescription = shortDescription;
             CategoryName = categoryName;
             ImagePreview = imagePreview;
-            BuyerId = buyerid;
+            WhoCreate = bueyr;
         }
 
-        public static Result<Lot> Create(string? name, string? shortDescription, string? categoryName, Image? imagePreview, int? lotId = 0, int? buyerid = 0)
+        public static Result<Lot> Create(string? name, string? shortDescription, string? categoryName, Image? imagePreview, int? lotId = 0, Buyer? buyer = null)
         {
-            return Result.Success(new Lot(lotId, name, shortDescription, categoryName, imagePreview, buyerid));
+            return Result.Success(new Lot(lotId, name, shortDescription, categoryName, imagePreview, buyer));
         }
 
     }

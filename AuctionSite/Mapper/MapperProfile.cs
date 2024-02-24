@@ -17,7 +17,8 @@ namespace AuctionSite.API.Mapper
                     .Create(entity.Name,
                             entity.ShortDescription,
                             entity.CategoryName,
-                            Image.Create(entity.ImagePreviewName, 5000).Value, 0,entity.BuyerId).Value,
+                            Image.Create(entity.ImagePreviewName, 5000).Value, 0,
+                            Buyer.Create(entity.BuyerFirstName,entity.BuyerLastName,null, entity.BuyerId.Value).Value).Value,
                     entity.FullDescription,
                     entity.StartDate,
                     DateTime.Now.AddDays((double)entity.DurationSale!),
@@ -40,7 +41,7 @@ namespace AuctionSite.API.Mapper
                 .ForMember(dest => dest.ShortDescription, opt => opt.MapFrom(m => m.Lot.ShortDescription))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(m => m.Lot.CategoryName))
                 .ForMember(dest => dest.ImagePreview, opt => opt.MapFrom(m => m.Lot.ImagePreview!.Name))
-                .ForMember(dest => dest.WhoCreatedUserId, opt => opt.MapFrom(m => m.Lot.BuyerId));
+                .ForMember(dest => dest.WhoCreatedId, opt => opt.MapFrom(m => m.Lot.WhoCreate.Id));
 
             CreateMap<Lot, LotEntity>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(map => map.Id))
@@ -57,7 +58,8 @@ namespace AuctionSite.API.Mapper
                                                    Image.Create(entity.ImagePreview, 5000).Value : null, entity.Id,null).Value);
 
             CreateMap<SpecificLotEntity, SpecificLot>()
-            .ConstructUsing(entity => SpecificLot.Create(Lot.Create(entity.Name, entity.ShortDescription, entity.CategoryName, Image.Create(entity.ImagePreview, 5000).Value, entity.Id, entity.WhoCreatedUserId).Value,
+            .ConstructUsing(entity => SpecificLot.Create(Lot.Create(entity.Name, entity.ShortDescription, entity.CategoryName, Image.Create(entity.ImagePreview, 5000).Value, entity.Id,
+                                            Buyer.Create(entity.Buyer.FirstName, entity.Buyer.SecondName,null,entity.Buyer.Id).Value).Value,
                                               entity.FullDescription,
                                               entity.StartDate,
                                               entity.EndDate,
@@ -80,8 +82,6 @@ namespace AuctionSite.API.Mapper
              .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.User.Role))
              .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
              .ForMember(dest => dest.SecondName, opt => opt.MapFrom(src => src.SecondName));
-
-
         }
         private Buyer MapUser(BuyerEntity buyerEntity)
         {
@@ -101,13 +101,13 @@ namespace AuctionSite.API.Mapper
             if (buyer == null)
                 return null;
 
-            string comments = betEntity.Comments?.Text;
+            var comments = betEntity.Comments;
 
-            var bet = Bet.Create(buyer.FirstName, buyer.SecondName, comments, betEntity.Price, betEntity.Id).Value;
+            var bet = Bet.Create(buyer.FirstName, buyer.SecondName, comments!, betEntity.Price, betEntity.Id).Value;
 
-            if (betEntity.Comments != null && betEntity.Comments.ReplyComments != null)
+            if (betEntity.ReplyComments != null)
             {
-                var replyComments = betEntity.Comments.ReplyComments.Select(c =>
+                var replyComments = betEntity.ReplyComments.Select(c =>
                     ReplyComments.Create(c.Text, c.UserName).Value).ToList();
                 bet.AddReplyComments(replyComments);
             }

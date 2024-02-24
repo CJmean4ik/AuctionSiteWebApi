@@ -4,16 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AuctionSite.DataAccess.Configurations
 {
-    internal class CommentsEntityConfig : IEntityTypeConfiguration<CommentsEntity>
+    internal class CommentsEntityConfig : IEntityTypeConfiguration<ReplyCommentsEntity>
     {
-        public void Configure(EntityTypeBuilder<CommentsEntity> builder)
+        public void Configure(EntityTypeBuilder<ReplyCommentsEntity> builder)
         {
+            
             builder.HasKey(hk => hk.Id);
             builder.Property(p => p.Id).ValueGeneratedOnAdd();
 
+            /*
             builder.HasOne(ho => ho.Bet)
-                   .WithOne(wo => wo.Comments)
-                   .HasForeignKey<BetEntity>(fk => fk.CommentsId);
+                   .WithMany(wm => wm.ReplyComments);
+            */
         }
     }
 }
