@@ -36,6 +36,7 @@ namespace AuctionSite
             builder.Services.AddScoped<IModifierArgumentChanger<AuctionDbContext>>(opt => new ModifierArgumentChangerDecorator<AuctionDbContext>(new ModifierArgumentChanger<AuctionDbContext>()));
             builder.Services.AddScoped<ILotRepository, LotRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
             builder.Services.AddScoped<IBetRepository, BetRepository>();
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
@@ -50,6 +51,7 @@ namespace AuctionSite
             builder.Services.AddScoped<LotService>();
             builder.Services.AddScoped<BetService>();
             builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<CommentsService>();
 
             var app = builder.Build();
 

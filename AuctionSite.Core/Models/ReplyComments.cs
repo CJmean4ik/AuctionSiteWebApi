@@ -8,14 +8,17 @@ namespace AuctionSite.Core.Models
         public string Text { get; } = string.Empty;
         public string UserName { get; } = string.Empty;
 
-        private ReplyComments(int id, string text, string userName)
+        public int BetId { get; set; }
+
+        private ReplyComments(int id, string text, string userName, int betId)
         {
             Id = id;
             Text = text;
             UserName = userName;
+            BetId = betId;
         }
 
-        public static Result<ReplyComments> Create(string text, string userName, int id = 0)
-            => Result.Success(new ReplyComments(id, text, userName));
+        public static Result<ReplyComments> Create(string text, string userName, int id = 0,int betId = 0)
+            => Result.Success(new ReplyComments(id, text, userName, betId));
     }
 }

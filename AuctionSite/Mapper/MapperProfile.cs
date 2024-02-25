@@ -82,6 +82,11 @@ namespace AuctionSite.API.Mapper
              .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.User.Role))
              .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
              .ForMember(dest => dest.SecondName, opt => opt.MapFrom(src => src.SecondName));
+
+            CreateMap<ReplyComments, ReplyCommentsEntity>()
+           .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Text))
+           .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName));
+
         }
         private Buyer MapUser(BuyerEntity buyerEntity)
         {
@@ -108,7 +113,7 @@ namespace AuctionSite.API.Mapper
             if (betEntity.ReplyComments != null)
             {
                 var replyComments = betEntity.ReplyComments.Select(c =>
-                    ReplyComments.Create(c.Text, c.UserName).Value).ToList();
+                    ReplyComments.Create(c.Text, c.UserName,c.Id,c.BetId).Value).ToList();
                 bet.AddReplyComments(replyComments);
             }
 

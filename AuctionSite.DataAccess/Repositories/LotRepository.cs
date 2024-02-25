@@ -121,7 +121,7 @@ namespace AuctionSite.DataAccess.Repositories
                                                     .Include(s => s.Bets.OrderByDescending(b => b.Price).Take(5))!
                                                     .ThenInclude(s => s.Buyer)                      
                                                     .Include(s => s.Bets)!
-                                                    .ThenInclude(b => b.ReplyComments)
+                                                    .ThenInclude(b => b.ReplyComments.Take(5))
                                                     .Where(s => s.Id == id)
                                                     .FirstOrDefaultAsync();
 

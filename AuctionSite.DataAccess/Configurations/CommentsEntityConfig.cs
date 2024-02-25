@@ -11,11 +11,9 @@ namespace AuctionSite.DataAccess.Configurations
             
             builder.HasKey(hk => hk.Id);
             builder.Property(p => p.Id).ValueGeneratedOnAdd();
-
-            /*
+          
             builder.HasOne(ho => ho.Bet)
                    .WithMany(wm => wm.ReplyComments);
-            */
         }
     }
 }
