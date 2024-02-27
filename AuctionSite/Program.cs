@@ -18,6 +18,8 @@ namespace AuctionSite
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddSwaggerGen();
+
             builder.Services.AddControllers();
             builder.Services.AddCors();
             builder.Services.AddAutoMapper(typeof(Program));
@@ -59,6 +61,13 @@ namespace AuctionSite
             app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSwagger()
+              .UseSwaggerUI(config =>
+              {
+                  config.RoutePrefix = string.Empty;
+                  config.SwaggerEndpoint("/swagger/v1/swagger.json", "AUCTION REST API");
+              });
 
             app.Run();
         }
