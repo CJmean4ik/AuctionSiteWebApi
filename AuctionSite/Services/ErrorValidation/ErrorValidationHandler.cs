@@ -1,6 +1,6 @@
 ﻿using AuctionSite.API.Contracts;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-
+// ВАСЯЯЯ все х№йня давай по новой (❤️) PS в мене піднялося питання на це код 
 namespace AuctionSite.API.Services.ErrorValidation
 {
     internal class ErrorValidationHandler : IErrorValidationHandler<List<ErrorModel>, ModelStateDictionary>
