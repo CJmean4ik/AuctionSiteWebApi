@@ -5,6 +5,7 @@ namespace AuctionSite.API.Services.ErrorValidation
 {
     internal class ErrorValidationHandler : IErrorValidationHandler<List<ErrorModel>, ModelStateDictionary>
     {
+        //ЫЫЫЫЫ
         public List<ErrorModel> HandleError(ModelStateDictionary modelState)
         {
             List<ErrorModel> errors = new List<ErrorModel>();
