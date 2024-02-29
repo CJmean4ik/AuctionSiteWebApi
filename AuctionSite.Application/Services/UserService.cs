@@ -24,23 +24,35 @@ namespace AuctionSite.Application
         {
             var userForLogin = await _userRepository.GetByEmail(user.Email);
 
-            if (!_passwordHasher.Decryption(user.Password, userForLogin.Value.User.PasswordSalt, userForLogin.Value.User.Password))
-                return Result.Failure<string>("Wrong password");
+            if (userForLogin.IsFailure)
+                return Result.Failure<string>(userForLogin.Error);
 
-            var claims = new List<Claim>
+            try
             {
-                new Claim(ClaimTypes.Email, userForLogin.Value.User.Email),
-                new Claim(ClaimTypes.Name, userForLogin.Value.FirstName),
-                new Claim(ClaimTypes.Surname, userForLogin.Value.SecondName),
-                new Claim(ClaimTypes.Role, userForLogin.Value.User.Role),
-                new Claim(ClaimTypes.NameIdentifier, userForLogin.Value.Id.ToString())
-            };
+                if (!_passwordHasher.Decryption(user.Password, userForLogin.Value.User.PasswordSalt, userForLogin.Value.User.Password))
+                    return Result.Failure<string>("Wrong password");
 
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Email, userForLogin.Value.User.Email),
+                    new Claim(ClaimTypes.Name, userForLogin.Value.FirstName),
+                    new Claim(ClaimTypes.Surname, userForLogin.Value.SecondName),
+                    new Claim(ClaimTypes.Role, userForLogin.Value.User.Role),
+                    new Claim(ClaimTypes.NameIdentifier, userForLogin.Value.Id.ToString())
+                };
 
-            await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
-            return Result.Success("Login Success!");
+                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+
+                return Result.Success(userForLogin.Value.User.Role);
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<string>(ex.Message);
+            }
+            
         }
         public async Task<Result<string>> LogOutUser(HttpContext httpContext)
         {
@@ -56,14 +68,20 @@ namespace AuctionSite.Application
         }
         public async Task<Result<string>> RegisterUser(Buyer buyer)
         {
-            var paswordHashingResult = _passwordHasher.Encryption(buyer.User.Password);
+            try
+            {
+                var paswordHashingResult = _passwordHasher.Encryption(buyer.User.Password);
 
-            buyer.User.SetSalt(paswordHashingResult.salt);
-            buyer.User.SetPassword(paswordHashingResult.hash);
+                buyer.User.SetSalt(paswordHashingResult.salt);
+                buyer.User.SetPassword(paswordHashingResult.hash);
 
-            var result = await _userRepository.AddAsync(buyer);
-  
-            return result;
+                var result = await _userRepository.AddAsync(buyer);                
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<string>(ex.Message);
+            }
         }
     }
 }

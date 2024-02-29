@@ -1,5 +1,6 @@
 ﻿using AuctionSite.API.Contracts;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 namespace AuctionSite.API.Services.ErrorValidation
 {
     internal class ErrorValidationHandler : IErrorValidationHandler<List<ErrorModel>, ModelStateDictionary>
@@ -21,8 +22,8 @@ namespace AuctionSite.API.Services.ErrorValidation
                 {
                     errorModel.Descriptions.Add(error.ErrorMessage);
                 }
-
             }
+
             return errors;
         }
     }

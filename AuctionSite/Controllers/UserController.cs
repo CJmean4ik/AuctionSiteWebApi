@@ -3,6 +3,7 @@ using AuctionSite.Application;
 using AuctionSite.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace AuctionSite.API.Controllers
 {
@@ -23,7 +24,19 @@ namespace AuctionSite.API.Controllers
             user.SetPassword(userAuthorize.EnteredPassword);
 
             var result = await _usersService.LoginUser(user, HttpContext);
-            return Json(result.Value);
+
+            if (result.IsFailure)           
+                return Json(new {Error = result.Error  });
+            
+            return Json(new 
+            {
+                Message = "Success",
+                Claims = new 
+                {
+                    Email = user.Email,
+                    Role = result.Value
+                } 
+            });
         }
 
         [HttpPost("buyer/registration")]
