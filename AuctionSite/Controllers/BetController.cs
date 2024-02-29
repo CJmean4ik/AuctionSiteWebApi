@@ -4,7 +4,7 @@ using AuctionSite.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-
+// типо чето изменил 1.0 
 namespace AuctionSite.API.Controllers
 {
     [ApiController]
