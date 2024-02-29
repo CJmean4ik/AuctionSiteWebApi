@@ -4,7 +4,7 @@ using AuctionSite.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-
+// чето изменил в ветке дионисий 2
 namespace AuctionSite.API.Controllers
 {
     [ApiController]
