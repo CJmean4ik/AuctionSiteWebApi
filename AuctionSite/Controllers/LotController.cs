@@ -6,7 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-// чето там изменения 3
+
 namespace AuctionSite.API.Controllers
 {
     [ApiController]
