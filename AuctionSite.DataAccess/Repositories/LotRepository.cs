@@ -83,7 +83,6 @@ namespace AuctionSite.DataAccess.Repositories
                 await _dbContext.Lots.AddAsync(lotEntity);
 
                 await SaveChangeAsync();
-
                 return Result.Success("The entity has been added: " + lotEntity.Id);
             }
             catch (Exception ex)
