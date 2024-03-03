@@ -1,4 +1,5 @@
-﻿using AuctionSite.Core.Contracts.Repositories.Specific;
+﻿using AuctionSite.Application.Services.Image;
+using AuctionSite.Core.Contracts.Repositories.Specific;
 using AuctionSite.Core.Models;
 using CSharpFunctionalExtensions;
 
@@ -7,7 +8,7 @@ namespace AuctionSite.Application.Services
     public class LotService
     {
         private readonly ILotRepository _lotRepository;
-
+        private readonly IImageService _imageService;
         public LotService(ILotRepository lotRepository)
         {
             _lotRepository = lotRepository;
