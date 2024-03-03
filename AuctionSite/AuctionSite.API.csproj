@@ -22,8 +22,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AuctionSite.Application\AuctionSite.Application.csproj" />
-    <ProjectReference Include="..\AuctionSite.Core\AuctionSite.Core.csproj" />
     <ProjectReference Include="..\AuctionSite.DataAccess\AuctionSite.DataAccess.csproj" />
+    <ProjectReference Include="..\AuctionSite.Infrastructure\AuctionSite.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

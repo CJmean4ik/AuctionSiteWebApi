@@ -1,6 +1,6 @@
-﻿using AuctionSite.Application.Services.Password;
-using AuctionSite.Core.Contracts.Repositories.Specific;
+﻿using AuctionSite.Core.Contracts.Repositories.Specific;
 using AuctionSite.Core.Models;
+using AuctionSite.Infrastructure.Password;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

@@ -1,5 +1,5 @@
 ﻿using AuctionSite.API.DTO;
-using AuctionSite.Application.Services.Image;
+using AuctionSite.Infrastructure.Image;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

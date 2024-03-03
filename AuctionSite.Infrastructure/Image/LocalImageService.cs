@@ -1,8 +1,7 @@
-﻿using Azure.Storage.Blobs;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Http;
 
-namespace AuctionSite.Application.Services.Image
+namespace AuctionSite.Infrastructure.Image
 {
     public class LocalImageService : IImageService
     {

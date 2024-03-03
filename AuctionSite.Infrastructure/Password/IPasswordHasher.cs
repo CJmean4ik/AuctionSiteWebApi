@@ -1,4 +1,4 @@
-﻿namespace AuctionSite.Application.Services.Password
+﻿namespace AuctionSite.Infrastructure.Password
 {
     public interface IPasswordHasher
     {
