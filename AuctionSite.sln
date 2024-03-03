@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionSite.Application", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuctionSite.DataAccess", "AuctionSite.DataAccess\AuctionSite.DataAccess.csproj", "{6F6F055B-9EC8-4A0A-B47D-F114328889BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSite.Infrastructure", "AuctionSite.Infrastructure\AuctionSite.Infrastructure.csproj", "{2415B511-97F2-4DFB-BFB8-9972AECDDAF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{6F6F055B-9EC8-4A0A-B47D-F114328889BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F6F055B-9EC8-4A0A-B47D-F114328889BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F6F055B-9EC8-4A0A-B47D-F114328889BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2415B511-97F2-4DFB-BFB8-9972AECDDAF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2415B511-97F2-4DFB-BFB8-9972AECDDAF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2415B511-97F2-4DFB-BFB8-9972AECDDAF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2415B511-97F2-4DFB-BFB8-9972AECDDAF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

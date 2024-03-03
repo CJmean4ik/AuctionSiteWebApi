@@ -1,6 +1,6 @@
-﻿using AuctionSite.Application.Services.Image;
-using AuctionSite.Core.Contracts.Repositories.Specific;
+﻿using AuctionSite.Core.Contracts.Repositories.Specific;
 using AuctionSite.Core.Models;
+using AuctionSite.Infrastructure.Image;
 using CSharpFunctionalExtensions;
 
 namespace AuctionSite.Application.Services
